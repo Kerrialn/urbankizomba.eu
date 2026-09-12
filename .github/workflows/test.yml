@@ -1,0 +1,73 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    env:
+      # server_version must match config/packages/doctrine.php (16); the DB name
+      # gets a _test suffix in the test env (see doctrine.php dbname_suffix).
+      DATABASE_URL: postgresql://urbankiz:urbankiz@127.0.0.1:5432/urbankiz?serverVersion=16&charset=utf8
+
+    services:
+      db:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: urbankiz
+          POSTGRES_PASSWORD: urbankiz
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+          coverage: none
+          extensions: mbstring, intl, pdo_pgsql
+
+      - run: composer install --dev --no-progress
+
+      - name: Prepare test database
+        run: |
+          php bin/console --env=test doctrine:database:create --if-not-exists
+          php bin/console --env=test doctrine:schema:create
+
+      - run: vendor/bin/phpunit
+
+  ecs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+          coverage: none
+      - run: composer install --dev --no-progress --no-scripts
+      - run: composer run-script check-cs
+
+  rector:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+          coverage: none
+      - run: composer install --dev --no-progress --no-scripts
+      - run: composer run-script rector-dry
+
+  phpstan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+          coverage: none
+      - run: composer install --dev --no-progress --no-scripts
+      - run: composer run-script phpstan

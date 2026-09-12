@@ -1,0 +1,43 @@
+{% block turnstile_row %}
+    <div id="cf-turnstile-{{ id }}"></div>
+    {{ form_widget(form) }}
+    {{ form_errors(form) }}
+    <script>
+        (function() {
+            var container = document.getElementById('cf-turnstile-{{ id }}');
+            var field = document.getElementById('{{ id }}');
+
+            function render() {
+                window.turnstile.render(container, {
+                    sitekey: {{ site_key|json_encode|raw }},
+                    appearance: 'interaction-only',
+                    callback: function(token) { field.value = token; },
+                    'error-callback': function() { field.value = ''; },
+                    'expired-callback': function() { field.value = ''; }
+                });
+            }
+
+            if (window.turnstile) {
+                render();
+                return;
+            }
+
+            window.__cfTurnstileOnLoad = render;
+            if (!document.querySelector('script[src*="challenges.cloudflare.com/turnstile"]')) {
+                var s = document.createElement('script');
+                s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=__cfTurnstileOnLoad';
+                s.async = true;
+                document.head.appendChild(s);
+            }
+        })();
+    </script>
+{% endblock %}
+
+{% block turnstile_widget %}
+    <input
+        type="hidden"
+        id="{{ id }}"
+        name="{{ full_name }}"
+        value="{{ value }}"
+    />
+{% endblock %}

@@ -1,0 +1,47 @@
+{% if pageCount > 1 %}
+    {% set base = 'inline-flex items-center justify-center min-w-10 h-10 px-3 border border-gray-200 text-sm no-underline' %}
+    <nav class="text-center my-6">
+        <div class="inline-flex -space-x-px rounded-lg overflow-hidden shadow-sm">
+
+            {# Previous button #}
+            {% if previous is defined %}
+                <a class="{{ base }} bg-white text-gray-600 hover:bg-gray-50" rel="prev" href="{{ path(route, query|merge({(pageParameterName): previous})) }}">
+                    {{ ux_icon('tabler:chevron-left', {style: 'height: 1rem;'}) }}
+                </a>
+            {% else %}
+                <span class="{{ base }} bg-gray-50 text-gray-300 cursor-not-allowed">
+                    {{ ux_icon('tabler:chevron-left', {style: 'height: 1rem;'}) }}
+                </span>
+            {% endif %}
+
+            {# Always show the first page #}
+            <a class="{{ base }} {{ current == 1 ? 'bg-primary text-white border-primary' : 'bg-white text-gray-700 hover:bg-gray-50' }}"
+               href="{{ path(route, query|merge({(pageParameterName): 1})) }}">1</a>
+
+            {# Show current page if it's not the first or last page #}
+            {% if current > 1 and current < pageCount %}
+                <span class="{{ base }} bg-white text-gray-400">&hellip;</span>
+                <span class="{{ base }} bg-primary text-white border-primary">{{ current }}</span>
+            {% endif %}
+
+            {# Show last page #}
+            {% if current < pageCount - 1 %}
+                <span class="{{ base }} bg-white text-gray-400">&hellip;</span>
+            {% endif %}
+            <a class="{{ base }} {{ current == pageCount ? 'bg-primary text-white border-primary' : 'bg-white text-gray-700 hover:bg-gray-50' }}"
+               href="{{ path(route, query|merge({(pageParameterName): pageCount})) }}">{{ pageCount }}</a>
+
+            {# Next button #}
+            {% if next is defined %}
+                <a class="{{ base }} bg-white text-gray-600 hover:bg-gray-50" rel="next" href="{{ path(route, query|merge({(pageParameterName): next})) }}">
+                    {{ ux_icon('tabler:chevron-right', {style: 'height: 1rem;'}) }}
+                </a>
+            {% else %}
+                <span class="{{ base }} bg-gray-50 text-gray-300 cursor-not-allowed">
+                    {{ ux_icon('tabler:chevron-right', {style: 'height: 1rem;'}) }}
+                </span>
+            {% endif %}
+
+        </div>
+    </nav>
+{% endif %}

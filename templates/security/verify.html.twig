@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'security.verify.title'|trans }} · {{ company.trading_name }}{% endblock %}
+
+{% block body %}
+    <div class="mx-auto max-w-sm px-4 py-16">
+        <h1 class="text-2xl font-bold text-heading">{{ 'security.verify.title'|trans }}</h1>
+        <p class="mt-2 text-sm text-body-subtle">
+            {{ 'security.verify.intro'|trans({ email: destination })|raw }}
+        </p>
+
+        {% if error %}
+            <div class="mt-4 rounded-base bg-danger-medium px-4 py-3 text-sm text-danger-strong">
+                {{ error.messageKey|trans(error.messageData) }}
+            </div>
+        {% endif %}
+
+        {{ form_start(form, { action: path('app_login_verify'), attr: { class: 'mt-6' } }) }}
+            {# Errors on the root form land here, not on a field: a rejected CSRF
+               token, and $form->addError() such as the login rate limit. Without
+               this the page re-renders in silence and the button looks broken. #}
+            {{ form_errors(form) }}
+            {{ form_row(form.code) }}
+
+            <button type="submit"
+                    class="mt-6 w-full rounded-base bg-primary px-4 py-2.5 font-medium text-white hover:bg-primary-hover">
+                {{ 'security.verify.submit'|trans }}
+            </button>
+        {{ form_end(form) }}
+
+        <p class="mt-6 text-sm text-body-subtle">
+            <a href="{{ path('app_login') }}" class="text-primary hover:underline">
+                {{ 'security.verify.resend'|trans }}
+            </a>
+        </p>
+    </div>
+{% endblock %}

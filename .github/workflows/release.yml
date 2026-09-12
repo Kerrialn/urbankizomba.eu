@@ -1,0 +1,193 @@
+# https://github.com/docker/build-push-action/blob/master/docs/advanced/tags-labels.md
+
+name: Release
+
+on:
+  workflow_run:
+    workflows: [ Tests ]
+    types:
+      - completed
+    branches:
+      - main
+
+jobs:
+  docker:
+    name: "Docker images"
+    runs-on: ubuntu-latest
+    # GITHUB_TOKEN is minted per job and expires with it, so there is no PAT to
+    # rotate or leak. Requires each package to grant this repo Write under
+    # Package settings -> Manage Actions access.
+    permissions:
+      contents: read
+      packages: write
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Docker meta PHP
+        id: meta-php
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/kerrialn/urbankizomba.eu-php
+          tags: |
+            type=ref,event=branch
+            type=sha
+          no-cache: true
+
+      - name: Docker meta Caddy
+        id: meta-caddy
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/kerrialn/urbankizomba.eu-caddy
+          tags: |
+            type=ref,event=branch
+            type=sha
+
+      - name: Docker meta Worker
+        id: meta-worker
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/kerrialn/urbankizomba.eu-worker
+          tags: |
+            type=ref,event=branch
+            type=sha
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push PHP
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          target: php
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta-php.outputs.tags }}
+          labels: ${{ steps.meta-php.outputs.labels }}
+          cache-from: type=gha, scope=${{ github.workflow }}
+          cache-to: type=gha, scope=${{ github.workflow }}
+
+      - name: Build and push Caddy
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          target: caddy
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta-caddy.outputs.tags }}
+          labels: ${{ steps.meta-caddy.outputs.labels }}
+          cache-from: type=gha, scope=${{ github.workflow }}
+          cache-to: type=gha, scope=${{ github.workflow }}
+
+      - name: Build and push Worker
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          target: worker
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta-worker.outputs.tags }}
+          labels: ${{ steps.meta-worker.outputs.labels }}
+          cache-from: type=gha, scope=${{ github.workflow }}
+          cache-to: type=gha, scope=${{ github.workflow }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    # Only checks out the repo; the server is reached over SSH, not the API.
+    permissions:
+      contents: read
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    needs:
+      - docker
+    environment:
+      name: prod
+      url: https://urbankizomba.eu
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Substitutes __SECRET_NAME__ placeholders in the template with literal
+      # string replacement: no sed delimiters, no escaping, no shell quoting.
+      - name: Prepare docker-compose file
+        run: |
+          python3 - <<'PY'
+          import json, os, pathlib
+          from urllib.parse import quote
+
+          secrets = json.loads(os.environ['SECRETS'])
+          template = pathlib.Path('.deployment/docker-compose.production-template.yml')
+          target = pathlib.Path('.deployment/docker-compose.yml')
+
+          def clean(value):
+              # Secrets pasted into the GitHub UI often carry a trailing newline,
+              # which would break the YAML.
+              return str(value).replace('\n', '').replace('\t', '')
+
+          values = {key: clean(value) for key, value in secrets.items()}
+
+          # DATABASE_URL is a URL; POSTGRES_USER/POSTGRES_PASSWORD are not. A
+          # password containing @ : / ? # or % silently truncates the DSN, so the
+          # DSN gets percent-encoded copies and the server keeps the raw values.
+          for key in ('UK_POSTGRES_USER', 'UK_POSTGRES_PASSWORD'):
+              if key in values:
+                  values[f'{key}_URLENCODED'] = quote(values[key], safe='')
+
+          content = template.read_text()
+          # Longest placeholder first, so __X__ cannot eat part of __X_URLENCODED__.
+          for key in sorted(values, key=len, reverse=True):
+              content = content.replace(f'__{key}__', values[key])
+
+          target.write_text(content)
+          PY
+        env:
+          SECRETS: ${{ toJson(secrets) }}
+
+      # Never `cat` this file: it holds every production secret in plaintext.
+      # The grep prints placeholder NAMES, never values.
+      - name: Verify every placeholder was substituted
+        run: |
+          leftover=$(grep -o '__[A-Z_]\+__' .deployment/docker-compose.yml | sort -u || true)
+          if [ -n "$leftover" ]; then
+            echo "::error::Unsubstituted placeholders — missing repository secrets:"
+            echo "$leftover"
+            exit 1
+          fi
+          echo "All placeholders substituted."
+
+      - name: Rsync Docker files
+        uses: burnett01/rsync-deployments@5.2
+        with:
+          switches: -azvr --exclude='docker-compose.production-template.yml'
+          path: ./.deployment/
+          remote_path: /urbankizomba.eu
+          remote_host: ${{ secrets.DEPLOY_HOST }}
+          remote_user: ${{ secrets.DEPLOY_USERNAME }}
+          remote_key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+
+      - uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USERNAME }}
+          key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+          script_stop: true
+          script: |
+            cd /urbankizomba.eu
+            if docker compose version >/dev/null 2>&1; then
+              compose="docker compose"
+            elif command -v docker-compose >/dev/null 2>&1; then
+              compose="docker-compose"
+            else
+              echo "::error::Neither 'docker compose' nor 'docker-compose' is available on the host."
+              exit 1
+            fi
+            $compose -p urbankizomba pull
+            $compose -p urbankizomba up -d --remove-orphans

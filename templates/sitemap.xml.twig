@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+{# Every page is listed once per language, and each entry carries the full set of
+   alternates — that is what tells a crawler /cenik and /en/pricing are one
+   document rather than two thin ones. A page published in one language alone,
+   like the articles, simply has one alternate.
+
+   No changefreq, and lastmod only where the date is real: an article carries the
+   one its author maintains in the frontmatter, the marketing pages carry none
+   rather than an invented one. #}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+{% for page in pages %}
+{% for url in page.alternates %}
+    <url>
+        <loc>{{ url }}</loc>
+{% if page.lastmod %}
+        <lastmod>{{ page.lastmod }}</lastmod>
+{% endif %}
+{% for locale, alternate in page.alternates %}
+        <xhtml:link rel="alternate" hreflang="{{ locale }}" href="{{ alternate }}"/>
+{% endfor %}
+        <xhtml:link rel="alternate" hreflang="x-default" href="{{ page.x_default }}"/>
+    </url>
+{% endfor %}
+{% endfor %}
+</urlset>

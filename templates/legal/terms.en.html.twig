@@ -1,0 +1,163 @@
+{% extends 'legal/_layout.html.twig' %}
+
+{% block title %}Terms · {{ company.trading_name }}{% endblock %}
+{% block meta_description %}Terms of use for the Kaltra service.{% endblock %}
+
+{% block doc_title %}Terms{% endblock %}
+{% block doc_subtitle %}
+    Version {{ version }}. The Czech text is the binding one; this is a
+    translation for convenience.
+{% endblock %}
+
+{% block doc_body %}
+    <h2>1. Who provides the service</h2>
+    <p>
+        {{ company.trading_name }} is operated by <strong>{{ company.legal_name }}</strong>,
+        company no. {{ company.company_number }}, registered at {{ company.street }},
+        {{ company.postcode }} {{ company.city }}, Czech Republic ("the provider").
+        Contact: <a href="mailto:{{ company.email }}">{{ company.email }}</a>,
+        {{ company.phone }}.
+    </p>
+    <p>
+        <strong>The provider is not registered for VAT.</strong> Prices shown are final.
+    </p>
+
+    <h2>2. Who the service is for</h2>
+    <p>
+        The service is for businesses only — medical practices and healthcare
+        providers, acting in the course of their business. <strong>This is not a
+        consumer contract</strong> and consumer contract provisions do not apply.
+    </p>
+
+    <h2>3. What the service does</h2>
+    <p>
+        Kaltra processes a patient export from the practice's software, works out
+        whose preventive examination or dispensary review the health insurer will now
+        pay for, and — once the practice has approved the list — sends those patients
+        an SMS invitation in the practice's name.
+    </p>
+    <p>
+        Which kinds of invitation a plan covers is set out on the
+        <a href="{{ path('app_pricing') }}">pricing page</a>: preventive
+        examinations are in every plan, dispensary reviews from the Group practice
+        plan upwards. A practice on a lower plan still sees its chronic patients
+        in the list and has them counted, but cannot send them an invitation.
+    </p>
+
+    <h3>What it does not do</h3>
+    <ul>
+        <li>It is not a booking system. Patients book directly with the practice.</li>
+        <li>It does not connect into practice software. It works from an export the practice produces.</li>
+        <li>It does not replace patient records or medical documentation.</li>
+        <li>It gives no medical advice and makes no treatment decisions.</li>
+    </ul>
+
+    <h2>4. Nothing sends without approval</h2>
+    <p>
+        No message goes out until the practice has approved both the list of
+        recipients and the text. The system never sends on its own. Approval is the
+        practice's decision and the practice is responsible for it.
+    </p>
+
+    <h2>5. Responsibility for data</h2>
+    <p>
+        The practice is responsible for the accuracy of the data it uploads. The
+        provider calculates due dates from what the export contains; incorrect or
+        out-of-date data produces an incorrect result.
+    </p>
+    <p>
+        In particular, the practice is responsible for ensuring that the column it
+        identifies as the date of the last preventive examination genuinely holds a
+        preventive examination, and not any visit.
+    </p>
+
+    <h2>6. Insurer intervals</h2>
+    <p>
+        The intervals after which an insurer will pay for a procedure are set by the
+        insurers and can change. The provider maintains them to the best of its
+        knowledge but <strong>does not guarantee that any particular procedure will be
+        reimbursed</strong>. Reimbursement is decided by the insurer, not the provider.
+    </p>
+
+    <h2>7. Prices and payment</h2>
+    <ul>
+        <li>Plan prices are on the <a href="{{ path('app_pricing') }}">pricing page</a>. Plans differ in the number of registered patients, the SMS bundle included, and the kinds of invitation covered.</li>
+        <li>The patient count given for a plan is indicative: exceeding it does not stop sending, but the provider may ask the practice to move to the appropriate plan.</li>
+        <li><strong>The subscription is paid in advance</strong> for the period ahead, charged to the card on the day the practice activates a plan and at the start of each period thereafter.</li>
+        <li><strong>SMS beyond the bundle are billed in arrears</strong> for the period just ended — they cannot be counted before it. They appear on the following invoice.</li>
+        <li>Charging is per SMS, not per invitation: a message with Czech diacritics fits 70 characters per SMS instead of 160, so a longer text is usually two. The count is shown while writing.</li>
+        <li>Only messages actually sent are counted. A message that failed to send counts neither against the bundle nor as overage.</li>
+        <li><strong>A change of plan takes effect immediately.</strong> The new plan starts a new billing period, charged that day; the unused remainder of the previous period is neither refunded nor carried over.</li>
+        <li>Invoices are emailed as PDF. Payment terms are 14 days; where the amount is charged to the card, the invoice also serves as the receipt.</li>
+        <li>If a charge fails, sending does not stop — patients are already expecting the invitation. The amount remains due and the provider will ask the practice to settle it.</li>
+    </ul>
+
+    <h2>8. Referral discount</h2>
+    <ul>
+        <li>Where another practice registers through a practice's referral link and pays its first invoice, the referring practice's monthly fee is reduced by <strong>15%</strong>.</li>
+        <li>The reduction applies to at most <strong>twelve invoices</strong> per referral, and only <strong>while the referred practice remains subscribed</strong>. If the referred practice cancels, that reduction ends with the next invoice; if it resubscribes, the remaining months continue.</li>
+        <li>Reductions for several referrals add together, up to a maximum of <strong>45%</strong> of the fee.</li>
+        <li>The reduction applies to the monthly fee only, not to SMS beyond the bundle.</li>
+        <li>A reduction takes effect on the next invoice issued; invoices already issued are not adjusted retrospectively.</li>
+        <li>A referral cannot be claimed between practices sharing a company number. The provider may withdraw a reduction where the referred practice's first payment is refunded or charged back, or where a referral is plainly contrived.</li>
+    </ul>
+
+    <h2>9. Term and termination</h2>
+    <ul>
+        <li>The subscription is monthly, with no commitment.</li>
+        <li>The practice may cancel at any time in its account. It can keep sending until the end of the period already paid for; after that, sending stops.</li>
+        <li>A period paid for but not used is not refunded — the practice keeps the service until it ends.</li>
+        <li>Once the last paid period ends we issue a final invoice for any SMS sent beyond the bundle in that period. It carries no monthly fee, and where there is nothing to bill it is not issued at all.</li>
+        <li>The provider may terminate on 30 days' notice, or without notice on a material breach or misuse of the service.</li>
+        <li>After termination, patient data is deleted on request. Invoices and accounting records are retained as the law requires.</li>
+    </ul>
+
+    <h2>10. Availability</h2>
+    <p>
+        The provider aims for continuous availability but does not guarantee it. SMS
+        are sent Monday to Friday between 08:00 and 18:00 (Europe/Prague); messages
+        queued outside those hours go out in the next window. Delivery depends on the
+        mobile operator and cannot be guaranteed by the provider.
+    </p>
+
+    <h2>11. Limitation of liability</h2>
+    <p>
+        The provider is liable for damage caused by breach of these terms. Total
+        liability is limited to the amount the practice paid in the 12 months before
+        the damage arose.
+    </p>
+    <p>
+        The provider is not liable in particular for an insurer declining to reimburse
+        a procedure, for non-delivery of an SMS by an operator, for the consequences
+        of incorrect data in an uploaded export, or for lost profit. This limitation
+        does not apply to damage caused intentionally or by gross negligence, nor to
+        harm to natural rights of a person.
+    </p>
+
+    <h2>12. Data protection</h2>
+    <p>
+        The practice is the controller of patient data; the provider is the processor.
+        Details are in the <a href="{{ path('app_privacy') }}">privacy policy</a> and
+        in the processing agreement the practice accepts before uploading anything.
+    </p>
+
+    <h2>13. Changes to these terms</h2>
+    <p>
+        The provider may change these terms. Material changes are announced by email
+        at least 30 days in advance. A practice that does not accept a change may
+        cancel before it takes effect.
+    </p>
+
+    <h2>14. Governing law</h2>
+    <p>
+        This relationship is governed by the law of the Czech Republic. Disputes are
+        decided by the Czech courts having jurisdiction over the provider's
+        registered office.
+    </p>
+{% endblock %}
+
+{% block doc_footer %}
+    {{ company.legal_name }}, company no. {{ company.company_number }},
+    {{ company.street }}, {{ company.postcode }} {{ company.city }} ·
+    <a href="mailto:{{ company.email }}">{{ company.email }}</a>
+{% endblock %}

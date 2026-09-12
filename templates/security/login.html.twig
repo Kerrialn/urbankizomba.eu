@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'security.login.title'|trans }} · {{ company.trading_name }}{% endblock %}
+
+{% block body %}
+    <div class="mx-auto max-w-sm px-4 py-16">
+        <h1 class="text-2xl font-bold text-heading">{{ 'security.login.title'|trans }}</h1>
+        <p class="mt-2 text-sm text-body-subtle">{{ 'security.login.intro'|trans }}</p>
+
+        {{ form_start(form, { attr: { class: 'mt-6' } }) }}
+            {# Errors on the root form land here, not on a field: a rejected CSRF
+               token, and $form->addError() such as the login rate limit. Without
+               this the page re-renders in silence and the button looks broken. #}
+            {{ form_errors(form) }}
+            {{ form_row(form.email) }}
+
+            <button type="submit"
+                    class="w-full rounded-base bg-primary px-4 py-2.5 font-medium text-white hover:bg-primary-hover">
+                {{ 'security.login.submit'|trans }}
+            </button>
+        {{ form_end(form) }}
+
+        <p class="mt-6 text-sm text-body-subtle">
+            {{ 'security.login.no_account'|trans }}
+            <a href="{{ path('app_register') }}" class="text-primary hover:underline">
+                {{ 'nav.register'|trans }}
+            </a>
+        </p>
+    </div>
+{% endblock %}

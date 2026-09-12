@@ -1,0 +1,27 @@
+User-agent: *
+Allow: /
+
+# The application behind the sign-in. Every one of these bounces an anonymous
+# visitor to the login page, so none of it can be indexed anyway — saying so
+# keeps crawl budget on the pages meant to be found. Paths are listed per
+# language, because /ucet and /en/account are the same controller.
+Disallow: /login
+Disallow: /en/login
+Disallow: /prehled
+Disallow: /en/dashboard
+Disallow: /ucet
+Disallow: /en/account
+Disallow: /pozvanky
+Disallow: /en/recall
+Disallow: /predplatne
+Disallow: /en/billing
+Disallow: /onboarding
+Disallow: /en/onboarding
+Disallow: /easy-admin
+
+# Live component re-renders. They return page fragments, which is duplicate
+# content with no layout around it.
+Disallow: /_components
+Disallow: /en/_components
+
+Sitemap: https://kaltra.cz/sitemap.xml

@@ -1,0 +1,26 @@
+services:
+  php:
+    environment:
+      APP_ENV: dev
+
+  ###> symfony/mailer ###
+  mailer:
+    image: axllent/mailpit
+    ports:
+      - "1026:1025"
+      - "8026:8025"
+  ###< symfony/mailer ###
+
+  ###> worker with supervisor ###
+  worker:
+    build:
+      context: .
+      target: worker
+    environment:
+      APP_ENV: dev
+    volumes:
+      - .:/app:cached
+      - ./docker/php/php.ini:/usr/local/etc/php/php.ini
+    depends_on:
+      - database
+  ###< worker with supervisor ###

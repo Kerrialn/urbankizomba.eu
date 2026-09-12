@@ -1,0 +1,25 @@
+{# One footer for every email, so the three cannot drift into saying different
+   things about the same company.
+
+   Sits outside the white card, in the muted grey that reads as chrome rather
+   than content. The address is here because a commercial email from a Czech
+   company is expected to carry it; the privacy link because this is often the
+   only place a recipient will look for it. #}
+<tr>
+    <td style="padding:20px 8px 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; font-size:12px; line-height:1.6; color:#8a9899;">
+        <div style="border-top:1px solid #e3e9ea; padding-top:16px;">
+            <strong style="color:#5b6a6b;">{{ company.legal_name }}</strong><br>
+            {{ 'footer.company_number'|trans({}, locale: locale) }} {{ company.company_number }} ·
+            {{ company.street }}, {{ company.postcode }} {{ company.city }}<br>
+
+            {# Absolute URLs: the body is rendered by the Messenger worker, where
+               there is no request to resolve a relative path against.
+               framework.router.default_uri (APP_URL) is what makes this work. #}
+            <a href="mailto:{{ company.email }}" style="color:#0b6b78; text-decoration:none;">{{ company.email }}</a>
+            ·
+            <a href="{{ url('app_privacy') }}" style="color:#0b6b78; text-decoration:none;">
+                {{ 'footer.privacy'|trans({}, locale: locale) }}
+            </a>
+        </div>
+    </td>
+</tr>

@@ -1,0 +1,69 @@
+# Published ports are offset from the defaults so this stack can run beside
+# other projects on the same machine (kaltra.cz holds 80/443/5432/8000/8025).
+services:
+  php:
+    image: ghcr.io/eventpoints/php:main
+    platform: linux/arm64
+    volumes:
+      - .:/app:cached
+      - ./docker/php/php.ini:/usr/local/etc/php/php.ini
+      - ./docker/php/zz-opcache-dev.ini:/usr/local/etc/php/conf.d/zz-opcache-dev.ini
+    healthcheck:
+      test: ["CMD-SHELL", "php -v >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      - database
+
+  caddy:
+    image: ghcr.io/eventpoints/caddy:main
+    platform: linux/arm64
+    depends_on:
+      - php
+    environment:
+      SERVER_NAME: localhost, caddy:80
+      MERCURE_PUBLIC_URL: "https://localhost:8443/.well-known/mercure"
+      MERCURE_PUBLISHER_JWT_KEY: secret
+      MERCURE_SUBSCRIBER_JWT_KEY: secret
+    volumes:
+      - .:/app:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    ports:
+      - target: 80
+        published: 8090
+        protocol: tcp
+      - target: 443
+        published: 8443
+        protocol: tcp
+      - target: 443
+        published: 8443
+        protocol: udp
+
+  database:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: urbankiz
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: urbankiz
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+  adminer:
+    image: adminer:4.8.0
+    ports:
+      - "8001:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: database
+    depends_on:
+      - database
+
+volumes:
+  caddy_data:
+  caddy_config:
+  db-data:

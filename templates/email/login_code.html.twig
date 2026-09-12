@@ -1,0 +1,67 @@
+{# A deliberately plain transactional email.
+
+   Tables and inline styles, not the app's stylesheet: mail clients drop <link>
+   tags, Outlook renders through Word, and Gmail strips much of what survives.
+   The colours are the theme's own hex values (assets/app.css) rather than
+   tokens, because CSS variables do not resolve in most clients.
+
+   Everything is translated with an explicit locale. The mailer is routed async
+   (config/packages/messenger.php), so this template renders in the worker, where
+   there is no request and the translator sits at the default locale — without
+   the argument an English-speaking user would be sent a Czech email. #}
+<!doctype html>
+<html lang="{{ locale }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>{{ 'email.login_code.subject'|trans({ code: code }, locale: locale) }}</title>
+</head>
+<body style="margin:0; padding:0; background-color:#f8fafa;">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
+       style="border-collapse:collapse; background-color:#f8fafa;">
+    <tr>
+        <td align="center" style="padding:24px 12px;">
+
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600"
+                   style="border-collapse:collapse; width:100%; max-width:600px;">
+                {{ include('email/_header.html.twig') }}
+
+                <tr>
+                    <td style="background-color:#ffffff; border:1px solid #e3e9ea; border-radius:8px; padding:32px 24px;">
+
+                        <p style="margin:0 0 24px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; font-size:16px; line-height:1.5; color:#374151;">
+                            {{ 'email.login_code.greeting'|trans({}, locale: locale) }}
+                        </p>
+
+                        {# The code is the one thing the reader is here for, and it
+                           is typed by hand: wide letter spacing, and text rather
+                           than an image so it can still be copied. #}
+                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
+                               style="border-collapse:collapse;">
+                            <tr>
+                                <td align="center"
+                                    style="background-color:#eff8f9; border:1px solid #d3eaee; border-radius:6px; padding:20px 12px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; font-size:32px; font-weight:700; letter-spacing:0.25em; color:#0b6b78;">
+                                    {{ code }}
+                                </td>
+                            </tr>
+                        </table>
+
+                        <p style="margin:24px 0 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; font-size:15px; line-height:1.5; color:#374151;">
+                            {{ 'email.login_code.ttl'|trans({ minutes: ttl_minutes }, locale: locale) }}
+                        </p>
+
+                        <p style="margin:12px 0 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; font-size:13px; line-height:1.5; color:#6b7280;">
+                            {{ 'email.login_code.ignore'|trans({}, locale: locale) }}
+                        </p>
+                    </td>
+                </tr>
+
+                {{ include('email/_footer.html.twig') }}
+            </table>
+
+        </td>
+    </tr>
+</table>
+</body>
+</html>

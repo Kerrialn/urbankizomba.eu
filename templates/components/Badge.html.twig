@@ -1,0 +1,8 @@
+<span {{ attributes.defaults({ class: this.classes }) }}>
+    {% if icon %}
+        {{ ux_icon(icon, {style: 'height: 1em;'}) }}
+    {% endif %}
+    {% if text is defined %}
+        {{ text }}
+    {% endif %}
+</span>

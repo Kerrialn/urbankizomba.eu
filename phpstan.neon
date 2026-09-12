@@ -1,0 +1,15 @@
+includes:
+	- vendor/phpstan/phpstan-doctrine/extension.neon
+	- vendor/phpstan/phpstan-doctrine/rules.neon
+
+parameters:
+	level: 6
+	paths:
+		- ./src
+		- ./config
+		- ./tests
+	excludePaths:
+	    analyse:
+	         - ./src/DataFixtures/*
+	reportUnmatchedIgnoredErrors: false
+	treatPhpDocTypesAsCertain: false

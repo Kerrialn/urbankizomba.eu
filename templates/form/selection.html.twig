@@ -1,0 +1,51 @@
+{#
+  Tailwind pill-button widget for SelectionType.
+  Renders expanded choices as <input class="peer sr-only"> + styled <label>.
+  Works for both single-select (radio) and multi-select (checkbox) expanded choices.
+#}
+
+{% block selection_widget %}
+    {% set input_type = multiple ? 'checkbox' : 'radio' %}
+    <div class="flex flex-wrap gap-2">
+        {# A non-required expanded choice gets an implicit placeholder child with an
+           empty value, which would render as a blank pill. Skip it — pills have no
+           room for a "none" option; make it an explicit choice instead. #}
+        {% for name, child in form %}
+            {% if name != 'placeholder' %}
+            <div>
+                <input
+                    type="{{ input_type }}"
+                    class="peer sr-only"
+                    id="{{ child.vars.id }}"
+                    name="{{ child.vars.full_name }}"
+                    value="{{ child.vars.value }}"
+                    autocomplete="off"
+                    {% if child.vars.checked %}checked{% endif %}
+                    {% if child.vars.disabled %}disabled{% endif %}
+                    {% if child.vars.required and not multiple %}required{% endif %}
+                />
+                <label for="{{ child.vars.id }}"
+                       class="inline-flex items-center px-4 py-2 rounded-full border border-gray-300 text-sm font-medium cursor-pointer transition-colors
+                              text-gray-700 bg-white hover:bg-primary hover:text-white
+                              peer-checked:bg-primary peer-checked:text-white peer-checked:border-primary
+                              peer-disabled:opacity-50 peer-disabled:cursor-not-allowed">
+                    {{- child.vars.label|trans({}, translation_domain) -}}
+                </label>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block selection_row %}
+    <div class="mb-4 {{ row_attr.class|default('') }}" {% with { attr: row_attr|filter((v, k) => k != 'class') } %}{{ block('attributes') }}{% endwith %}>
+        {% if label is not same as(false) %}
+            <label class="block text-gray-800 mb-2">{{ label|trans({}, translation_domain) }}</label>
+        {% endif %}
+        {{ form_widget(form) }}
+        {{ form_errors(form) }}
+        {% if help is not empty %}
+            <div class="text-gray-500 text-sm mt-1">{{ help|trans({}, translation_domain) }}</div>
+        {% endif %}
+    </div>
+{% endblock %}

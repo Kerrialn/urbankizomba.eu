@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'registration.title'|trans }} · {{ company.trading_name }}{% endblock %}
+
+{% block body %}
+    <div class="mx-auto max-w-sm px-4 py-16">
+        <h1 class="text-2xl font-bold text-heading">{{ 'registration.title'|trans }}</h1>
+        <p class="mt-2 text-sm text-body-subtle">{{ 'registration.intro'|trans }}</p>
+
+        {# A receipt, not a pitch — the pitch was the banner on the page they came
+           from. All this has to do is show the recommendation was picked up,
+           because the ?ref= left the address bar on the way here and nothing
+           else would say so. #}
+        {% if referredBy %}
+            <p class="mt-4 inline-flex rounded-base bg-brand-soft px-3 py-1.5 text-sm text-brand-strong">
+                {{ 'registration.referred_by'|trans({ practice: referredBy.name }) }}
+            </p>
+        {% endif %}
+
+        {{ form_start(form, { attr: { class: 'mt-6' } }) }}
+            {# Errors on the root form land here, not on a field: a rejected CSRF
+               token, and $form->addError() such as the login rate limit. Without
+               this the page re-renders in silence and the button looks broken. #}
+            {{ form_errors(form) }}
+            {{ form_row(form.email) }}
+
+            <button type="submit"
+                    class="w-full rounded-base bg-primary px-4 py-2.5 font-medium text-white hover:bg-primary-hover">
+                {{ 'registration.submit'|trans }}
+            </button>
+        {{ form_end(form) }}
+
+        <p class="mt-6 text-sm text-body-subtle">
+            {{ 'registration.have_account'|trans }}
+            <a href="{{ path('app_login') }}" class="text-primary hover:underline">
+                {{ 'nav.login'|trans }}
+            </a>
+        </p>
+    </div>
+{% endblock %}

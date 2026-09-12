@@ -1,0 +1,96 @@
+services:
+  php:
+    image: ghcr.io/kerrialn/urbankizomba.eu-php:main
+    restart: unless-stopped
+    environment:
+      APP_URL: "https://urbankizomba.eu"
+      APP_ENV: "prod"
+      DATABASE_URL: "postgresql://__UK_POSTGRES_USER_URLENCODED__:__UK_POSTGRES_PASSWORD_URLENCODED__@database:5432/__UK_POSTGRES_DBNAME__?serverVersion=16&charset=utf8"
+      APP_SECRET: "__UK_APP_SECRET__"
+      MAILER_DSN: "__UK_MAILER_DSN__"
+      MESSENGER_TRANSPORT_DSN: "doctrine://default?auto_setup=0"
+      TRUSTED_PROXIES: "REMOTE_ADDR"
+      CLOUDFLARE_TURNSTILE_SITE_KEY: "__UK_CLOUDFLARE_TURNSTILE_SITE_KEY__"
+      CLOUDFLARE_TURNSTILE_SECRET_KEY: "__UK_CLOUDFLARE_TURNSTILE_SECRET_KEY__"
+    volumes:
+      - ./php.ini:/usr/local/etc/php/php.ini:ro
+      # Event posters. Shared with caddy, which serves them as static files.
+      - uploads:/app/public/uploads:rw
+    healthcheck:
+      test: ["CMD-SHELL", "php -v >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
+    networks:
+      - internal
+
+  worker:
+    image: ghcr.io/kerrialn/urbankizomba.eu-worker:main
+    restart: unless-stopped
+    depends_on:
+      - database
+    environment:
+      APP_URL: "https://urbankizomba.eu"
+      APP_ENV: "prod"
+      DATABASE_URL: "postgresql://__UK_POSTGRES_USER_URLENCODED__:__UK_POSTGRES_PASSWORD_URLENCODED__@database:5432/__UK_POSTGRES_DBNAME__?serverVersion=16&charset=utf8"
+      APP_SECRET: "__UK_APP_SECRET__"
+      MAILER_DSN: "__UK_MAILER_DSN__"
+      MESSENGER_TRANSPORT_DSN: "doctrine://default?auto_setup=0"
+      CLOUDFLARE_TURNSTILE_SITE_KEY: "__UK_CLOUDFLARE_TURNSTILE_SITE_KEY__"
+      CLOUDFLARE_TURNSTILE_SECRET_KEY: "__UK_CLOUDFLARE_TURNSTILE_SECRET_KEY__"
+    volumes:
+      - ./php.ini:/usr/local/etc/php/php.ini:ro
+      - uploads:/app/public/uploads:rw
+    networks:
+      - internal
+
+  caddy:
+    image: ghcr.io/kerrialn/urbankizomba.eu-caddy:main
+    restart: unless-stopped
+    depends_on:
+      - php
+    environment:
+      SERVER_NAME: ":80"                                  # Traefik terminates TLS
+      MERCURE_PUBLISHER_JWT_KEY: "__UK_MERCURE_JWT_SECRET__"
+      MERCURE_SUBSCRIBER_JWT_KEY: "__UK_MERCURE_JWT_SECRET__"
+    volumes:
+      - uploads:/app/public/uploads:ro
+      - caddy_data:/data
+      - caddy_config:/config
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    expose:
+      - "80"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.urbankiz.rule=Host(`urbankizomba.eu`) || Host(`www.urbankizomba.eu`)"
+      - "traefik.http.routers.urbankiz.entrypoints=websecure"
+      - "traefik.http.routers.urbankiz.tls=true"
+      - "traefik.http.routers.urbankiz.tls.certresolver=le"
+      - "traefik.docker.network=traefik"
+    networks:
+      - traefik
+      - internal
+
+  database:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: "__UK_POSTGRES_DBNAME__"
+      POSTGRES_PASSWORD: "__UK_POSTGRES_PASSWORD__"
+      POSTGRES_USER: "__UK_POSTGRES_USER__"
+    volumes:
+      - ./db-data:/var/lib/postgresql/data:rw
+    networks:
+      - internal
+
+networks:
+  traefik:
+    external: true
+  internal:
+    external: false
+
+volumes:
+  uploads:
+  caddy_data:
+  caddy_config:

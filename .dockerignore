@@ -1,0 +1,19 @@
+# Built/installed artifacts — regenerated inside the image
+/node_modules
+/public/build
+/public/bundles
+/public/uploads
+/vendor
+/var
+
+# Local-only
+/.env.local
+/.env.*.local
+/.git
+/.github
+/.idea
+/docker
+# ...but keep the prod PHP ini the Dockerfile bakes into the image
+!/docker/php/zz-prod.ini
+/db-data
+.DS_Store

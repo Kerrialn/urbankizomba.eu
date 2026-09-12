@@ -1,0 +1,236 @@
+{% extends 'legal/_layout.html.twig' %}
+
+{% block title %}Privacy · {{ company.trading_name }}{% endblock %}
+{% block meta_description %}How Kaltra handles practice and patient data.{% endblock %}
+
+{% block doc_title %}Privacy{% endblock %}
+{% block doc_subtitle %}
+    Version {{ version }}. Covers kaltra.cz and the service itself.
+    The Czech text is the binding one; this is a translation for convenience.
+{% endblock %}
+
+{% block doc_body %}
+    <p>
+        This service is operated by <strong>{{ company.legal_name }}</strong>, company
+        no. {{ company.company_number }}, registered at {{ company.street }},
+        {{ company.postcode }} {{ company.city }}, Czech Republic. For data protection
+        matters: <a href="mailto:{{ company.email }}">{{ company.email }}</a>.
+    </p>
+
+    <h2>Two different roles</h2>
+
+    <p>
+        We handle two kinds of data and our role differs for each. That distinction
+        governs the whole document, so it comes first.
+    </p>
+
+    <h3>Patient data — we are the processor</h3>
+    <p>
+        Patient data is uploaded by the practice. <strong>The practice is the
+        controller</strong>; we are only the processor and act on its instructions.
+        We do not decide whose data is processed or why. The terms are in the
+        processing agreement the practice accepts before uploading anything.
+    </p>
+
+    <h3>Practice and staff data — we are the controller</h3>
+    <p>
+        For the sign-in and billing details of the people who use the service, we are
+        the controller.
+    </p>
+
+    <h2>What patient data we hold</h2>
+
+    <p>From the export a practice uploads, we store only:</p>
+
+    <table>
+        <thead>
+            <tr><th>Field</th><th>Why</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>The practice's own patient identifier</td><td>Our only handle on a person.</td></tr>
+            <tr><td>Phone number</td><td>Where the invitation goes.</td></tr>
+            <tr><td>Surname (optional)</td><td>So the doctor can recognise who they are approving. The practice need not send it.</td></tr>
+            <tr><td>Health insurer</td><td>Decides how long before the insurer will pay for the examination again.</td></tr>
+            <tr><td>Date of the last preventive examination and dispensary review</td><td>The due date is calculated from these.</td></tr>
+            <tr><td>Recall group name</td><td>For example "Diabetes". <strong>Never a diagnosis code.</strong></td></tr>
+        </tbody>
+    </table>
+
+    <h3>Diagnoses</h3>
+    <p>
+        Where an export carries a diagnosis column, it is read <strong>while the file
+        is being processed</strong>, to work out who is under dispensary care and how
+        often they are due. The code is never written to the database. What stays
+        against the patient is the name of the recall group the practice chose — so
+        "Diabetes", never "E11.8". The uploaded file is deleted once processed.
+    </p>
+
+    <h3>What we do not want</h3>
+    <p>
+        Birth numbers, medical records, test results, or anything beyond the table
+        above. Where an export contains such columns, we neither read nor store them.
+    </p>
+
+    <h2>What the SMS says</h2>
+    <p>
+        The message contains no name, no diagnosis, no date and no reason for the
+        visit. If a number in an export is wrong, the worst case is that a stranger
+        receives a vague invitation — not that they learn something about someone
+        else's health. The sender shown is the practice's name, not our company.
+    </p>
+
+    <h2>Legal basis</h2>
+    <ul>
+        <li><strong>Patient data:</strong> processed under the processing agreement with the practice (Art. 28 GDPR). The legal basis for the processing itself is determined by the practice as controller.</li>
+        <li><strong>Account and sign-in:</strong> performance of a contract (Art. 6(1)(b) GDPR).</li>
+        <li><strong>Invoicing and accounting:</strong> compliance with a legal obligation (Art. 6(1)(c) GDPR).</li>
+    </ul>
+
+    <h2>Who else is involved</h2>
+
+    <p>We do not sell data to anyone. These processors take part in the service:</p>
+
+    <table>
+        <thead>
+            <tr><th>Who</th><th>For what</th><th>What reaches them</th><th>Where</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>46elks AB</td>
+                <td>Sending SMS</td>
+                <td>The patient's phone number and the message text</td>
+                <td>Sweden (EU)</td>
+            </tr>
+            <tr>
+                <td>Stripe</td>
+                <td>Card payments</td>
+                <td>The practice's billing details and card. <strong>No patient data.</strong></td>
+                <td>EU/US</td>
+            </tr>
+            <tr>
+                <td>Hetzner Online GmbH</td>
+                <td>Running the server and database</td>
+                <td>Everything stored in the service</td>
+                <td>Germany (EU)</td>
+            </tr>
+            <tr>
+                <td>Cloudflare, Inc.</td>
+                <td>Site protection, connection encryption and content delivery</td>
+                <td>All traffic between the practice and the service, including the uploaded file</td>
+                <td>US / global network</td>
+            </tr>
+            <tr>
+                <td>Simple Analytics B.V.</td>
+                <td>Website traffic</td>
+                <td>The page visited, where the visitor came from, device type and country. No patient data, no visitor profile.</td>
+                <td>Netherlands (EU)</td>
+            </tr>
+            <tr>
+                <td>Mailtrap</td>
+                <td>Emails to the practice (sign-in codes, invoices)</td>
+                <td>A staff email address. No patient data.</td>
+                <td>US (Standard Contractual Clauses)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>
+        Stored patient data is held in Germany. Stripe is a processor <strong>for
+        payment data only</strong> and never receives patient data.
+    </p>
+
+    <h3>Transfers outside the EU</h3>
+    <p>
+        Traffic to the site passes through Cloudflare's network, which protects the
+        service against attack and encrypts the connection. In doing so Cloudflare
+        processes the data in transit — including the file a practice uploads — and
+        is a company established in the United States. The transfer is covered by
+        Standard Contractual Clauses under Art. 46 GDPR within our data processing
+        agreement with Cloudflare.
+    </p>
+    <p>
+        Cloudflare does not <strong>store</strong> that data in this arrangement; it
+        passes through while a request is served. Data at rest stays on servers in
+        Germany.
+    </p>
+
+    <h2>How long we keep things</h2>
+    <ul>
+        <li><strong>The uploaded file:</strong> deleted as soon as it is processed, usually within seconds.</li>
+        <li><strong>Patient data:</strong> for the life of the agreement with the practice. Deleted on request once it ends.</li>
+        <li><strong>The record of a sent SMS:</strong> for the life of the agreement, so the practice can see who received one.</li>
+        <li><strong>Invoices and accounting records:</strong> for the period the law requires — tax documents 10 years, other accounting records 5. This cannot be shortened on request.</li>
+        <li><strong>Account and sign-in data:</strong> for the life of the account.</li>
+    </ul>
+
+    <h2>Cookies</h2>
+    <p>
+        We use <strong>strictly necessary cookies only</strong>: one for signing in
+        and form security, and Cloudflare's security cookie (<code>__cf_bm</code>),
+        which distinguishes a person from automated traffic.
+    </p>
+    <p>
+        No advertising, no tracking, and nothing is shared with ad networks. That
+        is why we do not ask you about cookies — strictly necessary ones require
+        no consent.
+    </p>
+
+    <h2>Website measurement</h2>
+    <p>
+        We measure site traffic with Simple Analytics. It
+        <strong>stores nothing on your device</strong> — no cookie, no
+        <code>localStorage</code>, no browser fingerprint. No consent is required
+        for that reason: the obligation to ask attaches to storing information on
+        your device or reading what is already there, and neither happens here.
+    </p>
+    <p>
+        We measure aggregate figures only: which page was visited, where the
+        visitor came from, device type and country. We build no visitor profile
+        and do not follow anyone across sites. Simple Analytics processes your IP
+        address only to derive the country and does not store it. The legal basis
+        is our legitimate interest in knowing which pages help people
+        (Art. 6(1)(f) GDPR); you may object to that processing.
+    </p>
+    <p>
+        The site's typeface is self-hosted. Loading a font from a third party
+        would send your IP address to its operator on every page view; that does
+        not happen here.
+    </p>
+
+    <h2>Your rights</h2>
+    <p>
+        You have the right of access, rectification, erasure, restriction of
+        processing, portability, and the right to object.
+    </p>
+    <p>
+        <strong>If you are a patient</strong>, please contact your practice — they are
+        the controller of your data and we act on their instructions. If you write to
+        us directly, we will pass the request on.
+    </p>
+    <p>
+        You may complain to the Czech data protection authority: Úřad pro ochranu
+        osobních údajů, Pplk. Sochora 27, 170 00 Praha 7,
+        <a href="https://uoou.gov.cz">uoou.gov.cz</a>.
+    </p>
+
+    <h2>Security</h2>
+    <ul>
+        <li>All traffic is encrypted over HTTPS.</li>
+        <li>Sign-in is by one-time code rather than a password — there is nothing to steal or reuse.</li>
+        <li>A practice sees only its own patients; access is constrained at the query level.</li>
+        <li>Uploaded files are staged outside the web root and deleted once read.</li>
+        <li>Birth numbers, where they appear in an insurance claim file, are hashed before anything is stored and never written down in their original form.</li>
+    </ul>
+
+    <h2>Changes</h2>
+    <p>
+        We may revise this document. Material changes are announced to practices by
+        email at least 30 days in advance. The version is shown at the top.
+    </p>
+{% endblock %}
+
+{% block doc_footer %}
+    {{ company.legal_name }}, company no. {{ company.company_number }},
+    {{ company.street }}, {{ company.postcode }} {{ company.city }} ·
+    <a href="mailto:{{ company.email }}">{{ company.email }}</a>
+{% endblock %}

@@ -1,0 +1,80 @@
+{# templates/form/floating_theme.html.twig #}
+
+{% block text_row %}
+    {# Define the exact classes from your Flowbite snippet #}
+    {% set input_classes = 'block px-2.5 pb-2.5 pt-4 w-full text-sm text-heading bg-transparent rounded-lg border-1 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer' %}
+
+    {# Changed bg-neutral-primary to bg-white to ensure the border is hidden behind the label #}
+    {% set label_classes = 'absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white rouned-lg px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1' %}
+
+    <div class="mb-5">
+        {# The positioning context is the input alone.
+
+           The resting label sits at top-1/2 — half of whatever box it is
+           positioned against. With the help text and errors inside that box, a
+           field with a long help string made the container tall and dropped the
+           label well below the input it belongs to. #}
+        <div class="relative">
+            {# 1. Render the INPUT first. Force a placeholder=" " to prevent double-text and make the CSS trick work. #}
+            {% set attr = attr|merge({
+                class: (input_classes ~ ' ' ~ attr.class|default(''))|trim,
+                placeholder: ' '
+            }) %}
+            {{ form_widget(form, { attr: attr }) }}
+
+            {# 2. Render the LABEL second. Symfony automatically links it to the input's ID #}
+            {{ form_label(form, null, {
+                label_attr: { class: label_classes }
+            }) }}
+        </div>
+
+        {# 3. Help text and errors sit outside the positioning context, below. #}
+        {% if help is not empty %}
+            <div class="mt-1 text-sm text-body-subtle">{{ form_help(form) }}</div>
+        {% endif %}
+
+        {{ form_errors(form) }}
+    </div>
+{% endblock %}
+
+{# Map other common text-based inputs to use the same floating label layout #}
+{% block email_row %}{{ block('text_row') }}{% endblock %}
+{% block password_row %}{{ block('text_row') }}{% endblock %}
+{% block number_row %}{{ block('text_row') }}{% endblock %}
+{# IntegerType's block prefix is "integer", not "number" — it extends FormType
+   directly rather than NumberType — so aliasing number_row alone left every
+   whole-number field falling back to Symfony's unstyled default row. #}
+{% block integer_row %}{{ block('text_row') }}{% endblock %}
+{% block money_row %}{{ block('text_row') }}{% endblock %}
+{% block percent_row %}{{ block('text_row') }}{% endblock %}
+{% block search_row %}{{ block('text_row') }}{% endblock %}
+{% block url_row %}{{ block('text_row') }}{% endblock %}
+{% block tel_row %}{{ block('text_row') }}{% endblock %}
+{% block choice_row %}{{ block('text_row') }}{% endblock %}
+{# Textarea: same floating label, but the resting (empty) label sits at the TOP
+   instead of vertically centred — appropriate for a multi-line field. #}
+{% block textarea_row %}
+    {% set input_classes = 'block px-2.5 pb-2.5 pt-4 w-full text-sm text-heading bg-transparent rounded-lg border-1 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer' %}
+    {% set label_classes = 'absolute text-sm text-body duration-300 transform top-2 -translate-y-4 scale-75 z-10 origin-[0] bg-white px-2 start-1 peer-focus:text-fg-brand peer-placeholder-shown:top-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto' %}
+
+    <div class="mb-5">
+        {# Same structure as text_row: the label is positioned against the input
+           and nothing else. This block anchors its resting label to top-4 rather
+           than a percentage, so it was not visibly wrong — but a positioning
+           context that quietly includes the help text is a trap either way. #}
+        <div class="relative">
+            {% set attr = attr|merge({
+                class: (input_classes ~ ' ' ~ attr.class|default(''))|trim,
+                placeholder: ' '
+            }) %}
+            {{ form_widget(form, { attr: attr }) }}
+            {{ form_label(form, null, { label_attr: { class: label_classes } }) }}
+        </div>
+
+        {% if help is not empty %}
+            <div class="mt-1 text-sm text-body-subtle">{{ form_help(form) }}</div>
+        {% endif %}
+
+        {{ form_errors(form) }}
+    </div>
+{% endblock %}
