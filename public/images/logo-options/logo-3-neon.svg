@@ -6,7 +6,7 @@
   <g filter="url(#glow)">
   <path d="M15,19 v15 a9,9 0 0 0 18,0 v-15" fill="none" stroke="#c4b5fd" stroke-width="4" stroke-linecap="round"/>
   <line x1="33" y1="34" x2="33" y2="46" stroke="#c4b5fd" stroke-width="4" stroke-linecap="round"/>
-  <line x1="34" y1="33" x2="48" y2="19" stroke="#f472b6" stroke-width="4" stroke-linecap="round"/>
-  <line x1="34" y1="33" x2="48" y2="47" stroke="#f472b6" stroke-width="4" stroke-linecap="round"/>
+  <line x1="34" y1="33" x2="48" y2="19" stroke="#c4b5fd" stroke-width="4" stroke-linecap="round"/>
+  <line x1="34" y1="33" x2="48" y2="47" stroke="#c4b5fd" stroke-width="4" stroke-linecap="round"/>
   </g>
 </svg>
