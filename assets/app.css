@@ -43,18 +43,18 @@
 
 @theme {
     /* Brand ---------------------------------------------------------------- */
-    --color-primary: #6d28d9;        /* violet-700, 6.6:1 on white */
-    --color-primary-hover: #5b21b6;  /* violet-800 */
+    --color-primary: #4c1d95;        /* the logo purple, 11:1 on white */
+    --color-primary-hover: #3b1578;  /* one step darker */
 
     --color-brand-softer: #f5f3ff;
     --color-brand-soft: #ede9fe;
-    --color-brand: #6d28d9;
+    --color-brand: #4c1d95;
     --color-brand-medium: #c4b5fd;
-    --color-brand-strong: #4c1d95;
+    --color-brand-strong: #2e1065;
 
     --color-brand-subtle: #c4b5fd;
-    --color-fg-brand: #6d28d9;
-    --color-fg-brand-strong: #4c1d95;
+    --color-fg-brand: #4c1d95;
+    --color-fg-brand-strong: #2e1065;
 
     /* Accent: the warm counterpoint used sparingly for "this weekend" and
        the newsletter block. */
