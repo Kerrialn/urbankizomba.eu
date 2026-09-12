@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'about.meta_title'|trans }} · {{ site.name }}{% endblock %}
+{% block meta_description %}{{ 'about.meta_description'|trans }}{% endblock %}
+
+{% block body %}
+    <div class="mx-auto max-w-3xl px-4 py-12 sm:py-16">
+        <h1 class="text-3xl font-bold tracking-tight text-heading">{{ 'about.title'|trans }}</h1>
+
+        <div class="mt-8 space-y-6 leading-relaxed text-body">
+            <p>{{ 'about.p1'|trans }}</p>
+            <p>{{ 'about.p2'|trans }}</p>
+
+            <h2 class="text-xl font-bold text-heading">{{ 'about.scope.heading'|trans }}</h2>
+            <p>{{ 'about.scope.body'|trans }}</p>
+
+            <h2 class="text-xl font-bold text-heading">{{ 'about.how.heading'|trans }}</h2>
+            <ul class="list-disc space-y-1.5 pl-6">
+                <li>{{ 'about.how.one'|trans }}</li>
+                <li>{{ 'about.how.two'|trans }}</li>
+                <li>{{ 'about.how.three'|trans }}</li>
+            </ul>
+
+            <h2 class="text-xl font-bold text-heading">{{ 'about.contact.heading'|trans }}</h2>
+            <p>
+                {{ 'about.contact.body'|trans }}
+                <a href="mailto:{{ site.email }}" class="text-primary underline">{{ site.email }}</a>
+            </p>
+        </div>
+
+        <div class="mt-10 flex flex-col gap-3 sm:flex-row">
+            <a href="{{ path('app_submit') }}" class="rounded-base bg-primary px-5 py-3 text-center font-medium text-white hover:bg-primary-hover">{{ 'nav.submit'|trans }}</a>
+            <a href="{{ path('app_newsletter') }}" class="rounded-base border border-default bg-white px-5 py-3 text-center font-medium text-body hover:bg-neutral-secondary-medium">{{ 'nav.newsletter'|trans }}</a>
+        </div>
+    </div>
+{% endblock %}

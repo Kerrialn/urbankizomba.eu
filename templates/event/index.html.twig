@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'events.meta_title'|trans }} · {{ site.name }}{% endblock %}
+{% block meta_description %}{{ 'events.meta_description'|trans }}{% endblock %}
+
+{# A filtered or paginated list is the same document as the unfiltered one.
+   The canonical (in base) already points at the bare route; this keeps the
+   filtered pages themselves out of the index. #}
+{% block robots %}
+    {% if filter.country or filter.type or filter.month or pagination.currentPageNumber > 1 %}
+        <meta name="robots" content="noindex, follow">
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    <div class="mx-auto max-w-7xl px-4 py-10">
+        <h1 class="text-3xl font-bold tracking-tight text-heading">{{ 'events.title'|trans }}</h1>
+        <p class="mt-2 text-body">{{ 'events.intro'|trans }}</p>
+
+        {# GET form: the URL is the state, so a filtered list can be shared. #}
+        <form method="get" action="{{ path('app_events') }}" class="mt-6 flex flex-wrap items-end gap-3">
+            {% set select_class = 'block rounded-base border border-default-medium bg-white px-3 py-2 text-sm text-heading focus:border-brand focus:ring-brand' %}
+            <label class="text-sm">
+                <span class="block text-xs font-medium text-body-subtle">{{ 'events.filter.country'|trans }}</span>
+                <select name="country" class="{{ select_class }} mt-1">
+                    <option value="">{{ 'events.filter.any_country'|trans }}</option>
+                    {% for code in countries %}
+                        <option value="{{ code }}" {{ filter.country == code ? 'selected' }}>{{ code|country_name }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label class="text-sm">
+                <span class="block text-xs font-medium text-body-subtle">{{ 'events.filter.type'|trans }}</span>
+                <select name="type" class="{{ select_class }} mt-1">
+                    <option value="">{{ 'events.filter.any_type'|trans }}</option>
+                    {% for type in types %}
+                        <option value="{{ type.value }}" {{ filter.type == type ? 'selected' }}>{{ type.label|trans }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label class="text-sm">
+                <span class="block text-xs font-medium text-body-subtle">{{ 'events.filter.month'|trans }}</span>
+                <select name="month" class="{{ select_class }} mt-1">
+                    <option value="">{{ 'events.filter.any_month'|trans }}</option>
+                    {% for month in months %}
+                        <option value="{{ month|date('Y-m') }}" {{ filter.month and filter.month|date('Y-m') == month|date('Y-m') ? 'selected' }}>{{ month|format_date(pattern: 'MMMM yyyy') }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <button type="submit" class="rounded-base bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-hover">
+                {{ 'events.filter.apply'|trans }}
+            </button>
+            {% if filter.country or filter.type or filter.month %}
+                <a href="{{ path('app_events') }}" class="py-2 text-sm text-body-subtle hover:text-body hover:underline">{{ 'events.filter.clear'|trans }}</a>
+            {% endif %}
+        </form>
+
+        {% if pagination.totalItemCount == 0 %}
+            <div class="mt-10 rounded-2xl border border-dashed border-default-medium bg-white p-8 text-center">
+                <p class="font-medium text-heading">{{ 'events.empty.title'|trans }}</p>
+                <p class="mt-2 text-sm text-body-subtle">{{ 'events.empty.body'|trans }}</p>
+                <a href="{{ path('app_submit') }}" class="mt-4 inline-block text-sm font-medium text-primary hover:underline">{{ 'nav.submit'|trans }}</a>
+            </div>
+        {% else %}
+            <p class="mt-6 text-sm text-body-subtle">
+                {{ 'events.count'|trans({ count: pagination.totalItemCount }) }}
+            </p>
+            <div class="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                {% for event in pagination %}
+                    {{ include('event/_card.html.twig', { event: event }) }}
+                {% endfor %}
+            </div>
+            {{ knp_pagination_render(pagination) }}
+        {% endif %}
+    </div>
+{% endblock %}

@@ -37,7 +37,7 @@
     <script type="application/ld+json">
         {{ article.jsonLd(
             url('app_article', { slug: article.slug }),
-            company,
+            site,
             absolute_url(asset('images/logo-180.png'))
         )|json_encode(constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_UNESCAPED_UNICODE'))|raw }}
     </script>

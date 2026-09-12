@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'cities.meta_title'|trans }} · {{ site.name }}{% endblock %}
+{% block meta_description %}{{ 'cities.meta_description'|trans }}{% endblock %}
+
+{% block body %}
+    <div class="mx-auto max-w-5xl px-4 py-10">
+        <h1 class="text-3xl font-bold tracking-tight text-heading">{{ 'cities.title'|trans }}</h1>
+        <p class="mt-2 text-body">{{ 'cities.intro'|trans }}</p>
+
+        {% if grouped is empty %}
+            <div class="mt-10 rounded-2xl border border-dashed border-default-medium bg-white p-8 text-center">
+                <p class="font-medium text-heading">{{ 'cities.empty.title'|trans }}</p>
+                <p class="mt-2 text-sm text-body-subtle">{{ 'cities.empty.body'|trans }}</p>
+            </div>
+        {% else %}
+            {% for country, rows in grouped %}
+                <section class="mt-10">
+                    <h2 class="text-sm font-semibold uppercase tracking-wide text-body-subtle">{{ country }}</h2>
+                    <ul class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                        {% for row in rows %}
+                            <li>
+                                <a href="{{ path('app_city', { slug: row.city.slug }) }}"
+                                   class="flex items-center justify-between rounded-2xl border border-default bg-white px-5 py-4 hover:border-brand-medium hover:shadow-md">
+                                    <span class="font-semibold text-heading">{{ row.city.name }}</span>
+                                    <span class="text-xs text-body-subtle">
+                                        {% if row.upcoming > 0 %}{{ 'cities.count.upcoming'|trans({ count: row.upcoming }) }}{% endif %}
+                                        {% if row.upcoming > 0 and row.socials > 0 %} · {% endif %}
+                                        {% if row.socials > 0 %}{{ 'cities.count.socials'|trans({ count: row.socials }) }}{% endif %}
+                                    </span>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </section>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}

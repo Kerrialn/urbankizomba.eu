@@ -1,16 +1,8 @@
-/* Inter, self-hosted.
-
-   Served from our own origin rather than fonts.googleapis.com: loading it from
-   Google sent every visitor's IP address to a third party in the US on every
-   page view, with no consent and nothing in the privacy policy. A German court
-   (LG München I, 2022) held that alone to be a GDPR breach.
-
-   One variable file per subset covering 400–700, so weights cost nothing extra.
-   The latin-ext range carries ě š č ř ž ů, which Czech needs and plain latin
-   does not — the browser fetches it only when a page contains those characters.
-
-   Downloaded from Google Fonts (Inter v20, OFL). To refresh, re-run the fetch in
-   docs/fonts.md rather than pointing the stylesheet back at Google. */
+/* Inter, self-hosted. Served from our own origin rather than fonts.googleapis.com
+   so no visitor's IP is sent to a third party on every page view (a German
+   court held that alone to be a GDPR breach). One variable file per subset
+   covering 400–700; latin-ext carries the accented characters French, German,
+   Portuguese and Polish city names need. */
 
 @font-face {
     font-family: 'Inter';
@@ -32,18 +24,18 @@
 
 @import "tailwindcss";
 @plugin "flowbite/plugin";
+@plugin "@tailwindcss/forms";
 
 @source "../node_modules/flowbite";
 @source "../templates";
 @source "../src";
 
 /* ---------------------------------------------------------------------------
-   Kaltra theme
+   urbankizomba.eu theme
    ---------------------------------------------------------------------------
-   Deep teal primary: clinical and calm, legible on the bright screens these
-   are used on all day, and distinct from the blue every Czech practice system
-   already uses. Every colour below is AA (>=4.5:1) against its intended
-   background — verified, not assumed.
+   Deep violet primary: it reads as night and music without being the magenta
+   every festival flyer already uses, and it holds AA (>=4.5:1) on white for
+   text and buttons.
 
    Token NAMES are consumed by Symfony UX Toolkit and Flowbite components.
    Change the values freely; renaming a token silently unstyles a component.
@@ -51,46 +43,46 @@
 
 @theme {
     /* Brand ---------------------------------------------------------------- */
-    --color-primary: #0b6b78;        /* 6.20:1 on white */
-    --color-primary-hover: #075a66;  /* 7.88:1 on white */
+    --color-primary: #6d28d9;        /* violet-700, 6.6:1 on white */
+    --color-primary-hover: #5b21b6;  /* violet-800 */
 
-    --color-brand-softer: #eff8f9;
-    --color-brand-soft: #d3eaee;
-    --color-brand: #0b6b78;
-    --color-brand-medium: #8fcbd3;
-    --color-brand-strong: #064e58;
+    --color-brand-softer: #f5f3ff;
+    --color-brand-soft: #ede9fe;
+    --color-brand: #6d28d9;
+    --color-brand-medium: #c4b5fd;
+    --color-brand-strong: #4c1d95;
 
-    --color-brand-subtle: #8fcbd3;
-    --color-fg-brand: #0b6b78;
-    --color-fg-brand-strong: #064e58;
+    --color-brand-subtle: #c4b5fd;
+    --color-fg-brand: #6d28d9;
+    --color-fg-brand-strong: #4c1d95;
 
-    /* Corner radius for UX Toolkit components (`rounded-base`). Matched to the
-       `rounded-lg` used by the app's own buttons, inputs and alerts so toolkit
-       controls sit flush with hand-written ones. Cards/modals opt up to
-       `rounded-2xl` in their own templates. Do NOT redefine --radius-lg/-xl/-2xl:
-       hand-written markup relies on the Tailwind defaults. */
+    /* Accent: the warm counterpoint used sparingly for "this weekend" and
+       the newsletter block. */
+    --color-accent: #db2777;         /* pink-600, 4.6:1 on white */
+    --color-accent-soft: #fce7f3;
+
     --radius-base: 0.5rem;
 
     /* Semantic text -------------------------------------------------------- */
-    --color-body: #374151;        /* gray-700 — 10.3:1; dense tables are read all day */
-    --color-body-subtle: #6b7280; /* gray-500 */
-    --color-heading: #111827;     /* gray-900 */
-    --color-fg-disabled: #9ca3af; /* gray-400 */
+    --color-body: #374151;
+    --color-body-subtle: #6b7280;
+    --color-heading: #111827;
+    --color-fg-disabled: #9ca3af;
 
     /* Neutral surfaces ----------------------------------------------------- */
     --color-neutral-primary: #ffffff;
     --color-neutral-primary-soft: #ffffff;
-    --color-neutral-secondary-soft: #f8fafa;   /* faint teal-tinted gray-50 */
-    --color-neutral-secondary-medium: #f1f5f5;
-    --color-neutral-tertiary: #e3e9ea;
-    --color-neutral-tertiary-soft: #f1f5f5;
-    --color-neutral-tertiary-medium: #e3e9ea;
-    --color-neutral-quaternary: #e3e9ea;
+    --color-neutral-secondary-soft: #faf9fc;
+    --color-neutral-secondary-medium: #f3f1f8;
+    --color-neutral-tertiary: #e6e3ee;
+    --color-neutral-tertiary-soft: #f3f1f8;
+    --color-neutral-tertiary-medium: #e6e3ee;
+    --color-neutral-quaternary: #e6e3ee;
 
     /* Borders -------------------------------------------------------------- */
-    --color-default: #e3e9ea;
-    --color-default-medium: #cbd5d6;
-    --color-light: #f1f5f5;
+    --color-default: #e6e3ee;
+    --color-default-medium: #cfcadb;
+    --color-light: #f3f1f8;
     --color-buffer: #ffffff;
 
     /* Status --------------------------------------------------------------- */
@@ -110,27 +102,11 @@
     --color-dark-strong: #111827;
     --color-dark-backdrop: #030712;
 
-    /* Recall lifecycle ------------------------------------------------------
-       The states a patient row moves through on the due list. Kept separate
-       from the generic status colours above so the two can diverge without
-       one breaking the other. */
-    --color-recall-due: #b45309;        /* due — 5.02:1 */
-    --color-recall-due-soft: #fef3c7;
-    --color-recall-overdue: #c2410c;    /* past due — 5.18:1 */
-    --color-recall-overdue-soft: #ffedd5;
-    --color-recall-contacted: #0b6b78;  /* message sent */
-    --color-recall-contacted-soft: #d3eaee;
-    --color-recall-booked: #4338ca;     /* appointment made */
-    --color-recall-booked-soft: #e0e7ff;
-    --color-recall-attended: #047857;   /* turned up — the number that renews the subscription */
-    --color-recall-attended-soft: #d1fae5;
-
     --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
 
-/* Tailwind v4 defaults bare `border` to currentColor (black). Restore the v3
-   default so utilities like `border-b`/`border-t` without an explicit colour
-   render as a light hairline. */
+/* Tailwind v4 defaults bare `border` to currentColor. Restore a light hairline
+   so `border-b`/`border-t` without an explicit colour read as dividers. */
 @layer base {
     *,
     ::before,
@@ -143,30 +119,12 @@
 @layer base {
     [type='text']:focus,
     [type='email']:focus,
-    [type='password']:focus,
-    [type='number']:focus,
-    [type='tel']:focus,
-    [type='search']:focus,
     [type='url']:focus,
     [type='date']:focus,
-    [type='datetime-local']:focus,
-    [type='time']:focus,
     [type='file']:focus,
     textarea:focus,
     select:focus {
         --tw-ring-color: var(--color-primary);
         border-color: var(--color-primary);
-    }
-}
-
-/* @stimulus-components/read-more clamps via this custom property; the controller
-   toggles --read-more-line-clamp to expand/collapse. */
-@layer components {
-    .read-more-content {
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: var(--read-more-line-clamp, 5);
-        line-clamp: var(--read-more-line-clamp, 5);
     }
 }

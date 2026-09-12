@@ -6,7 +6,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     $containerConfigurator->extension('monolog', [
-        'channels' => ['deprecation', 'upload'],
+        'channels' => ['deprecation'],
     ]);
 
     if ($containerConfigurator->env() === 'prod') {

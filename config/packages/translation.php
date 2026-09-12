@@ -8,15 +8,13 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 return static function (ContainerConfigurator $containerConfigurator): void {
     $containerConfigurator->extension('framework', [
         'default_locale' => Locale::DEFAULT->value,
-        // A visitor who has chosen nothing gets Czech: the market is Czech
-        // practices, and negotiating from Accept-Language would make the same
-        // URL answer differently per visitor. English is reached by asking for
-        // it — the /en routes and the switcher in the navbar.
+        // English only. The scene is international and English is the language
+        // the festivals themselves publish in, so one language covers every
+        // country without halving the time available for content.
         'enabled_locales' => Locale::activeValues(),
         'translator' => [
             'default_path' => '%kernel.project_dir%/translations',
             'fallbacks' => [
-                'cs',
                 'en',
             ],
             'providers' => null,

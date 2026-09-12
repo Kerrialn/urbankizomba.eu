@@ -1,0 +1,94 @@
+{% extends 'legal/_layout.html.twig' %}
+
+{% block title %}Terms · {{ site.name }}{% endblock %}
+{% block meta_description %}Terms of use for {{ site.domain }}.{% endblock %}
+
+{% block doc_title %}Terms of use{% endblock %}
+{% block doc_subtitle %}Version {{ version }}. These terms cover the website at {{ site.domain }}.{% endblock %}
+
+{% block doc_body %}
+    <h2>1. Who runs the site</h2>
+    <p>
+        {{ site.name }} ({{ site.domain }}) is run by <strong>{{ site.operator }}</strong>
+        ("we"). Contact: <a href="mailto:{{ site.email }}">{{ site.email }}</a>.
+    </p>
+
+    <h2>2. What the site is</h2>
+    <p>
+        A community calendar of urban kiz events in Europe: festivals, weekenders,
+        workshops, parties and recurring socials. Listings are submitted by the
+        people who run them or attend them and are checked by us before they are
+        published. The site is free to use and free to list on.
+    </p>
+
+    <h2>3. Listings are information, not a promise</h2>
+    <p>
+        We check that a listing looks genuine before publishing it. We do not verify
+        dates, prices, line-ups or venues with the organiser, and events change. Before
+        you travel or buy a ticket, confirm the details with the organiser. We are not
+        a party to any ticket sale and are not responsible for an event being cancelled,
+        moved or different from its listing.
+    </p>
+    <p>
+        A recurring social shows the date somebody last confirmed it was still running.
+        Treat an old date as exactly that.
+    </p>
+
+    <h2>4. Submitting a listing</h2>
+    <p>By submitting a listing you confirm that:</p>
+    <ul>
+        <li>the information is accurate to the best of your knowledge;</li>
+        <li>you have the right to use any poster or image you upload, and grant us a
+            non-exclusive licence to display it on the site, in the newsletter and in
+            links to the listing shared on social media;</li>
+        <li>the listing is for an urban kiz or closely related dance event in Europe,
+            and is not advertising for anything else.</li>
+    </ul>
+    <p>
+        We may edit a listing for clarity (a city spelling, a missing country), decline
+        it, or remove it at any time, and we do not have to give a reason. Rejected
+        listings are visible to the person who submitted them, with a note where we
+        left one.
+    </p>
+
+    <h2>5. Accounts</h2>
+    <p>
+        An account is an email address. You sign in with a one-time code we send to it;
+        there is no password. Keep your inbox secure, because anyone who can read it
+        can sign in as you. You can ask us to delete your account at any time by
+        emailing <a href="mailto:{{ site.email }}">{{ site.email }}</a>; listings you
+        submitted stay on the site unless you ask for those to go too.
+    </p>
+
+    <h2>6. Newsletter</h2>
+    <p>
+        The newsletter goes only to addresses that have confirmed by clicking the link
+        we send. Every issue carries an unsubscribe link, which works immediately and
+        without signing in.
+    </p>
+
+    <h2>7. Acceptable use</h2>
+    <p>
+        Do not submit listings that are false, that you do not have the right to post,
+        or that are not what the site is for. Do not scrape the site at a rate that
+        affects other visitors. We may block accounts or addresses that do.
+    </p>
+
+    <h2>8. Liability</h2>
+    <p>
+        The site is provided as it is. To the extent the law allows, we accept no
+        liability for loss arising from reliance on a listing, from the site being
+        unavailable, or from anything a third party does with information they found
+        here. Nothing in these terms limits liability that cannot be limited by law.
+    </p>
+
+    <h2>9. Changes</h2>
+    <p>
+        We may change these terms. The version date at the top is the way to tell.
+        Continuing to use the site after a change means you accept the new terms.
+    </p>
+{% endblock %}
+
+{% block doc_footer %}
+    Version {{ version }}. Questions to <a href="mailto:{{ site.email }}" class="underline">{{ site.email }}</a>.
+{% endblock %}

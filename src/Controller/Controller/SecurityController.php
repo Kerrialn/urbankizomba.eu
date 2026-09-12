@@ -15,6 +15,7 @@ use App\Service\Auth\LoginCodeService;
 use LogicException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
@@ -36,14 +37,8 @@ final class SecurityController extends AbstractController
         #[Autowire(service: 'limiter.login_code_request')]
         RateLimiterFactoryInterface $loginCodeRequestLimiter,
     ): Response {
-        // FULLY, not merely "has a user". A remember-me cookie authenticates
-        // someone as IS_AUTHENTICATED_REMEMBERED, and every page behind this one
-        // demands FULLY — so redirecting them onward sent them to a page that
-        // bounced them straight back here. A deploy wipes the file-based session
-        // store while leaving the cookie, which is what made it appear only after
-        // releases: getUser() was non-null and nothing was reachable.
         if ($this->isGranted('IS_AUTHENTICATED_FULLY')) {
-            return $this->redirectToRoute('app_dashboard');
+            return $this->redirectToRoute('app_account');
         }
 
         $dto = new LoginRequestDto();
@@ -54,9 +49,7 @@ final class SecurityController extends AbstractController
             $email = mb_strtolower(trim((string) $dto->email));
 
             if (! $loginCodeRequestLimiter->create($email)->consume()->isAccepted()) {
-                $form->addError(new \Symfony\Component\Form\FormError(
-                    $translator->trans('login.error.too_many_requests')
-                ));
+                $form->addError(new FormError($translator->trans('login.error.too_many_requests')));
 
                 return $this->render('security/login.html.twig', [
                     'form' => $form,
@@ -64,10 +57,8 @@ final class SecurityController extends AbstractController
             }
 
             // Only issue a code to an address we know. The response is identical
-            // either way: whether a given practice is a customer is not public.
-            if ($userRepository->findOneBy([
-                'email' => $email,
-            ]) !== null) {
+            // either way: whether an address has an account is not public.
+            if ($userRepository->findOneByEmail($email) instanceof \App\Entity\User) {
                 $loginCodeService->issue(VerificationTypeEnum::EMAIL, $email);
             }
 
@@ -88,14 +79,8 @@ final class SecurityController extends AbstractController
     #[Route('/login/verify', name: 'app_login_verify', methods: ['GET', 'POST'])]
     public function verify(Request $request, AuthenticationUtils $authenticationUtils): Response
     {
-        // FULLY, not merely "has a user". A remember-me cookie authenticates
-        // someone as IS_AUTHENTICATED_REMEMBERED, and every page behind this one
-        // demands FULLY — so redirecting them onward sent them to a page that
-        // bounced them straight back here. A deploy wipes the file-based session
-        // store while leaving the cookie, which is what made it appear only after
-        // releases: getUser() was non-null and nothing was reachable.
         if ($this->isGranted('IS_AUTHENTICATED_FULLY')) {
-            return $this->redirectToRoute('app_dashboard');
+            return $this->redirectToRoute('app_account');
         }
 
         $destination = $request->getSession()->get(LoginCodeAuthenticator::SESSION_DESTINATION);

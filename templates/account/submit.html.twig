@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% set editing = event is not null %}
+
+{% block title %}{{ (editing ? 'submit.edit_title' : 'submit.title')|trans }} · {{ site.name }}{% endblock %}
+{% block robots %}<meta name="robots" content="noindex">{% endblock %}
+
+{% block body %}
+    <div class="mx-auto max-w-2xl px-4 py-10">
+        <h1 class="text-3xl font-bold tracking-tight text-heading">{{ (editing ? 'submit.edit_title' : 'submit.title')|trans }}</h1>
+        <p class="mt-2 text-body">{{ (editing ? 'submit.edit_intro' : 'submit.intro')|trans }}</p>
+
+        {{ form_start(form, { attr: { class: 'mt-8', 'data-controller': 'event-type' } }) }}
+            {{ form_errors(form) }}
+
+            <section class="rounded-2xl border border-default bg-white p-5">
+                <h2 class="mb-4 text-sm font-semibold uppercase tracking-wide text-body-subtle">{{ 'submit.section.what'|trans }}</h2>
+                {{ form_row(form.type) }}
+                {{ form_row(form.title) }}
+
+                {# Both groups are always in the page; the controller hides the
+                   one that does not apply. Without JavaScript both show, with
+                   the help text saying which to fill in. #}
+                <div data-event-type-target="dated">
+                    <div class="grid gap-x-4 sm:grid-cols-2">
+                        {{ form_row(form.startsAt) }}
+                        {{ form_row(form.endsAt) }}
+                    </div>
+                </div>
+                <div data-event-type-target="recurring">
+                    {{ form_row(form.schedule) }}
+                </div>
+            </section>
+
+            <section class="mt-5 rounded-2xl border border-default bg-white p-5">
+                <h2 class="mb-4 text-sm font-semibold uppercase tracking-wide text-body-subtle">{{ 'submit.section.where'|trans }}</h2>
+                {{ form_row(form.city) }}
+                <div class="grid gap-x-4 sm:grid-cols-2">
+                    {{ form_row(form.newCityName) }}
+                    {{ form_row(form.newCityCountry) }}
+                </div>
+                {{ form_row(form.venue) }}
+                {{ form_row(form.address) }}
+            </section>
+
+            <section class="mt-5 rounded-2xl border border-default bg-white p-5">
+                <h2 class="mb-4 text-sm font-semibold uppercase tracking-wide text-body-subtle">{{ 'submit.section.details'|trans }}</h2>
+                {{ form_row(form.description) }}
+                {{ form_row(form.organiser) }}
+                {{ form_row(form.lineup) }}
+                {{ form_row(form.url) }}
+                {{ form_row(form.ticketUrl) }}
+                {{ form_row(form.poster) }}
+                {% if editing and event.poster %}
+                    <p class="-mt-3 mb-4 text-xs text-body-subtle">{{ 'submit.field.poster_current'|trans }}</p>
+                {% endif %}
+            </section>
+
+            <p class="mt-5 text-sm text-body-subtle">{{ 'submit.review_note'|trans }}</p>
+
+            <button type="submit"
+                    class="mt-4 w-full rounded-base bg-primary px-4 py-3 font-medium text-white hover:bg-primary-hover">
+                {{ (editing ? 'submit.button.update' : 'submit.button.submit')|trans }}
+            </button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

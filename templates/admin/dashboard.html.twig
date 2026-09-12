@@ -1,0 +1,26 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Dashboard{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <p class="text-muted mb-1">Waiting for review</p>
+                    <p class="display-6 mb-2">{{ pending }}</p>
+                    <a href="{{ ea_url().setController('App\\Controller\\Admin\\EventCrudController').setAction('index').set('filters[status][value]', 'pending').set('filters[status][comparison]', '=') }}">Open the queue</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <p class="text-muted mb-1">Newsletter subscribers</p>
+                    <p class="display-6 mb-2">{{ subscribers }}</p>
+                    <span class="text-muted small">Confirmed and not unsubscribed. Send with <code>app:newsletter:send</code>.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -16,14 +16,14 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 final readonly class EmailCodeSender implements VerificationSenderInterface
 {
     /**
-     * @param array<string, string> $company
+     * @param array<string, string> $site
      */
     public function __construct(
         private MailerInterface $mailer,
         private TranslatorInterface $translator,
         private LocaleSwitcher $localeSwitcher,
-        #[Autowire('%app.company%')]
-        private array $company,
+        #[Autowire('%app.site%')]
+        private array $site,
     ) {
     }
 
@@ -34,13 +34,12 @@ final readonly class EmailCodeSender implements VerificationSenderInterface
 
     /**
      * $message is the bare code. The subject carries it too: on a phone the
-     * notification preview is often all the doctor needs to read before typing
-     * it into the desktop browser.
+     * notification preview is often all anyone reads before typing it in.
      */
     public function send(string $destination, string $message): void
     {
         $email = (new TemplatedEmail())
-            ->from(new Address($this->company['email'], $this->company['trading_name']))
+            ->from(new Address($this->site['email'], $this->site['name']))
             ->to($destination)
             ->subject($this->translator->trans('email.login_code.subject', [
                 'code' => $message,
@@ -49,10 +48,8 @@ final readonly class EmailCodeSender implements VerificationSenderInterface
             ->context([
                 'code' => $message,
                 'ttl_minutes' => 10,
-                // Captured here, in the request, because the body is rendered
-                // later by the Messenger worker: SendEmailMessage is routed
-                // async, and the worker translates at the default locale. A user
-                // reading the site in English would otherwise get a Czech email.
+                // Captured in the request, because the body is rendered later
+                // by the Messenger worker at the default locale.
                 'locale' => $this->localeSwitcher->getLocale(),
             ]);
 

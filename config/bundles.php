@@ -38,9 +38,6 @@ return [
     Symfony\Bundle\MakerBundle\MakerBundle::class => [
         'dev' => true,
     ],
-    SymfonyCasts\Bundle\VerifyEmail\SymfonyCastsVerifyEmailBundle::class => [
-        'all' => true,
-    ],
     Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle::class => [
         'dev' => true,
         'test' => true,
@@ -51,22 +48,10 @@ return [
     Symfony\UX\TwigComponent\TwigComponentBundle::class => [
         'all' => true,
     ],
-    Symfony\UX\Dropzone\DropzoneBundle::class => [
-        'all' => true,
-    ],
     Symfony\UX\Icons\UXIconsBundle::class => [
         'all' => true,
     ],
-    Misd\PhoneNumberBundle\MisdPhoneNumberBundle::class => [
-        'all' => true,
-    ],
-    Symfony\UX\LiveComponent\LiveComponentBundle::class => [
-        'all' => true,
-    ],
     EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle::class => [
-        'all' => true,
-    ],
-    Kerrialnewham\Autocomplete\AutocompleteBundle::class => [
         'all' => true,
     ],
     Pentatrion\ViteBundle\PentatrionViteBundle::class => [

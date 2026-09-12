@@ -1,0 +1,85 @@
+{% extends 'legal/_layout.html.twig' %}
+
+{% block title %}Privacy · {{ site.name }}{% endblock %}
+{% block meta_description %}What {{ site.domain }} stores about you, why, and for how long.{% endblock %}
+
+{% block doc_title %}Privacy{% endblock %}
+{% block doc_subtitle %}Version {{ version }}. Short, because there is not much to say.{% endblock %}
+
+{% block doc_body %}
+    <p>
+        The site is run by <strong>{{ site.operator }}</strong>, who is the data
+        controller for everything below. Contact:
+        <a href="mailto:{{ site.email }}">{{ site.email }}</a>.
+    </p>
+
+    <h2>What we store, and why</h2>
+
+    <table>
+        <thead>
+            <tr><th>Data</th><th>Why</th><th>How long</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Your email address, if you register</td>
+                <td>To sign you in, and to reach you about a listing you submitted. Legal basis: performing the service you asked for.</td>
+                <td>Until you ask us to delete the account.</td>
+            </tr>
+            <tr>
+                <td>Sign-in codes (a keyed hash, never the code itself)</td>
+                <td>To check the code you type.</td>
+                <td>Ten minutes, then purged daily.</td>
+            </tr>
+            <tr>
+                <td>Listings you submit, and who submitted them</td>
+                <td>To publish the calendar and to know who to ask about a listing. Legal basis: performing the service.</td>
+                <td>While the listing is on the site. Past events stay reachable at their URL unless removed.</td>
+            </tr>
+            <tr>
+                <td>Your email address, if you subscribe to the newsletter</td>
+                <td>To send you the monthly digest. Legal basis: your consent, given by clicking the confirmation link.</td>
+                <td>Until you unsubscribe. Unconfirmed addresses are deleted after 30 days.</td>
+            </tr>
+            <tr>
+                <td>Server logs (IP address, page requested, time)</td>
+                <td>To keep the site running and to stop abuse. Legal basis: legitimate interest.</td>
+                <td>Up to 30 days.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>What we do not do</h2>
+    <ul>
+        <li>No advertising, no tracking pixels, no analytics that identify you.</li>
+        <li>No selling or sharing of addresses with organisers or anyone else.</li>
+        <li>No profiling. The newsletter is the same for everyone.</li>
+    </ul>
+
+    <h2>Who else touches the data</h2>
+    <p>
+        The site is hosted on servers in the European Union. Email is sent through a
+        transactional email provider, which sees the addresses it delivers to. Public
+        forms are protected against bots by Cloudflare Turnstile, which sets no cookies
+        and does not identify you. Fonts are served from our own server, so no font
+        provider sees your visit.
+    </p>
+
+    <h2>Cookies</h2>
+    <p>
+        One session cookie, only when you sign in, so the site knows it is you from one
+        page to the next. Nothing else. There is no cookie banner because there is
+        nothing to consent to.
+    </p>
+
+    <h2>Your rights</h2>
+    <p>
+        You can ask what we hold about you, ask for it to be corrected or deleted, and
+        withdraw consent to the newsletter at any time by using the unsubscribe link or
+        by writing to <a href="mailto:{{ site.email }}">{{ site.email }}</a>. You can
+        also complain to the data protection authority in your country.
+    </p>
+{% endblock %}
+
+{% block doc_footer %}
+    Version {{ version }}.
+{% endblock %}

@@ -11,5 +11,6 @@ parameters:
 	excludePaths:
 	    analyse:
 	         - ./src/DataFixtures/*
+	         - config/reference.php
 	reportUnmatchedIgnoredErrors: false
 	treatPhpDocTypesAsCertain: false

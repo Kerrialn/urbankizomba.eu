@@ -45,10 +45,8 @@ final class LoginCodeAuthenticator extends AbstractLoginFormAuthenticator
 
     public function supports(Request $request): bool
     {
-        // Routes are localized, so "_route" is app_login_verify.cs or .en and
-        // never the bare name. "_canonical_route" is the name without the
-        // language suffix — comparing against "_route" would silently stop
-        // matching, and the form would post into a 405 instead of logging in.
+        // Routes are localized, so "_route" is app_login_verify.en and never
+        // the bare name. "_canonical_route" is the name without the suffix.
         $route = $request->attributes->get('_canonical_route')
             ?? $request->attributes->get('_route');
 
@@ -90,9 +88,9 @@ final class LoginCodeAuthenticator extends AbstractLoginFormAuthenticator
 
         $targetPath = $this->getTargetPath($request->getSession(), $firewallName);
 
-        // The dashboard, not the marketing page: someone who has just signed in
-        // came to do something, and app_home has nothing on it for them.
-        return new RedirectResponse($targetPath ?? $this->urlGenerator->generate('app_dashboard'));
+        // Somebody who signed in came to submit or check on an event, and the
+        // account page is where both of those start.
+        return new RedirectResponse($targetPath ?? $this->urlGenerator->generate('app_account'));
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response

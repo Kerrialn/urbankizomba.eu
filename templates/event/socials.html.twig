@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'socials.meta_title'|trans }} · {{ site.name }}{% endblock %}
+{% block meta_description %}{{ 'socials.meta_description'|trans }}{% endblock %}
+
+{% block body %}
+    <div class="mx-auto max-w-4xl px-4 py-10">
+        <h1 class="text-3xl font-bold tracking-tight text-heading">{{ 'socials.title'|trans }}</h1>
+        <p class="mt-2 text-body">{{ 'socials.intro'|trans }}</p>
+
+        {% if grouped is empty %}
+            <div class="mt-10 rounded-2xl border border-dashed border-default-medium bg-white p-8 text-center">
+                <p class="font-medium text-heading">{{ 'socials.empty.title'|trans }}</p>
+                <p class="mt-2 text-sm text-body-subtle">{{ 'socials.empty.body'|trans }}</p>
+                <a href="{{ path('app_submit') }}" class="mt-4 inline-block text-sm font-medium text-primary hover:underline">{{ 'nav.submit'|trans }}</a>
+            </div>
+        {% else %}
+            {% for country, cities in grouped %}
+                <section class="mt-10">
+                    <h2 class="text-xl font-bold text-heading">{{ country }}</h2>
+                    {% for city_name, socials in cities %}
+                        <div class="mt-4 rounded-2xl border border-default bg-white px-5">
+                            <h3 class="pt-4 text-sm font-semibold uppercase tracking-wide text-body-subtle">
+                                <a href="{{ path('app_city', { slug: socials[0].city.slug }) }}" class="hover:text-primary hover:underline">{{ city_name }}</a>
+                            </h3>
+                            <ul class="divide-y divide-default">
+                                {% for social in socials %}
+                                    {{ include('event/_social_row.html.twig', { social: social, confirmation_days: confirmation_days }) }}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endfor %}
+                </section>
+            {% endfor %}
+        {% endif %}
+
+        <p class="mt-10 text-sm text-body-subtle">{{ 'socials.note'|trans({ days: confirmation_days }) }}</p>
+    </div>
+{% endblock %}

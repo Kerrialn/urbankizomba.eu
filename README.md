@@ -1,30 +1,22 @@
-# kaltra.cz
+# urbankizomba.eu
 
-Patient recall software for Czech medical practices. A practice uploads an export
-from its practice-management system; Kaltra works out who is overdue a preventive
-examination or a dispensary review (09532), sends the invitations, and reports how
-many patients actually attended.
+A community calendar for the urban kiz scene in Europe: festivals, weekenders,
+workshops, parties and the weekly socials in each city. Anyone can submit a
+listing after signing in with their email; a listing goes live once an admin
+has approved it. A monthly newsletter digests what is coming up.
 
-Operated by BASEPOINT GROUP S.R.O (IČO 29574153).
+## Tech stack
 
-## Documentation
+- **Framework**: Symfony 7.4 on PHP 8.4
+- **Database**: PostgreSQL 16 (Doctrine ORM 3, migrations)
+- **Queue**: Symfony Messenger on the Doctrine transport (the database is the queue)
+- **Scheduling**: Symfony Scheduler, consumed by the worker container
+- **Frontend**: Twig, Turbo and Stimulus, Tailwind CSS 4 + Flowbite, built with Vite
+- **Back-office**: EasyAdmin at `/admin`
+- **Auth**: passwordless, a six-digit code sent by email
+- **Bots**: Cloudflare Turnstile on the public newsletter form
 
-- [Database Migrations](docs/database-migrations.md) — Doctrine Migrations, the additive-only rule, and applying on production
-- [Testing](docs/testing.md) — running the suite and provisioning the test database
-
-## Tech Stack
-
-- **Framework**: Symfony 7.4 with PHP 8.4
-- **Database**: PostgreSQL 16
-- **ORM**: Doctrine 3.3
-- **Queue**: Symfony Messenger (Doctrine transport — the database is the queue, no Redis)
-- **Scheduling**: Symfony Scheduler
-- **Frontend**: Twig, Symfony UX (Turbo, Live Component, Stimulus), Tailwind CSS 4 + Flowbite, built with Vite
-- **Back-office**: EasyAdmin
-- **Payments**: Stripe
-- **SMS**: 46elks via Symfony Notifier (EU-based — keeps the GDPR sub-processor list inside the EU)
-
-No SPA framework. The due-list is a Live Component; nothing here needs React or Vue.
+No SPA framework. Everything is server rendered.
 
 ## Running locally
 
@@ -34,31 +26,73 @@ composer install
 npm install && npm run build
 
 docker compose exec php php bin/console doctrine:migrations:migrate
+docker compose exec php php bin/console app:cities:seed
+docker compose exec php php bin/console app:user:promote you@example.com
 ```
 
-The app is served at https://localhost (Caddy, self-signed certificate).
-Adminer is on http://localhost:8000, Mailpit on http://localhost:8025.
+The app is served at https://localhost:8443 (Caddy, self-signed certificate).
+Adminer is on http://localhost:8001, Mailpit on http://localhost:8026, and
+sign-in codes land there. Ports are offset from the defaults so the stack can
+run beside other projects.
 
-Run console commands **inside the container** — `DATABASE_URL` points at the
-`database` service hostname, which does not resolve from the host:
+Run console commands **inside the container**: `DATABASE_URL` points at the
+`database` service hostname, which does not resolve from the host.
+
+For sample data on every page, load the fixtures instead of seeding:
 
 ```bash
-docker compose exec php php bin/console <command>
+docker compose exec php php bin/console doctrine:fixtures:load
 ```
 
-## Data protection
+That creates `admin@example.com` (admin) and `organiser@example.com`, six
+cities, a handful of events and four socials.
 
-This application processes patient data. Practices are the **controller**;
-Kaltra is the **processor**. Before onboarding a practice there must be a signed
-processing agreement in place, and the import must carry the minimum viable
-fields — an identifier, a phone number and a due date. Do not import birth numbers
-or medical history.
+`npm run dev` starts Vite with hot reload; `npm run build` writes
+`public/build`, which is not committed.
 
-Diagnosis columns are the one exception, and a narrow one: they are read during
-processing to work out which patients are under dispensary care and how often they
-are due, and the code itself is never written to the database. What is stored is
-the recall stream's label — "Diabetes", never "E11.8".
+## Day to day
 
-Nothing is ever sent without the practice explicitly approving the recipient list.
-That approval is both the product's safety net against bad data and the thing that
-makes each send the practice's decision rather than ours.
+| Task | How |
+| --- | --- |
+| Review submissions | `/admin/event`, filter by status. Approve and Reject are row actions. |
+| Make someone an admin | `bin/console app:user:promote them@example.com` |
+| Send the newsletter | `bin/console app:newsletter:send` (add `--dry-run` to count first). Queues one message per confirmed subscriber; the worker sends them. Refuses to resend to anyone who got one in the last 20 days. |
+| Add a guide | Drop a Markdown file in `content/guides/`. See the README there for the frontmatter. |
+| Add seed cities | Edit `SeedCitiesCommand::CITIES` and rerun `app:cities:seed`. It is idempotent. |
+
+## Tests and checks
+
+```bash
+docker compose exec php composer test        # PHPUnit
+docker compose exec php composer phpstan
+docker compose exec php composer check-cs    # ECS; fix-cs to apply
+docker compose exec php composer rector-dry
+```
+
+The test database is built from the entity mapping, not from migrations:
+
+```bash
+docker compose exec php php bin/console --env=test doctrine:database:create --if-not-exists
+docker compose exec php php bin/console --env=test doctrine:schema:create
+```
+
+## Deployment
+
+Pushing to `main` runs the tests, then builds three images (`php`, `worker`,
+`caddy`) to GHCR and deploys them over SSH with `docker compose`
+(`.github/workflows/release.yml`). Secrets are substituted into
+`.deployment/docker-compose.production-template.yml`; every `__UK_*__`
+placeholder there must exist as a repository secret, plus `DEPLOY_HOST`,
+`DEPLOY_USERNAME` and `DEPLOY_PRIVATE_KEY`.
+
+Migrations are **not** run by the deploy. After a release that carries one:
+
+```bash
+ssh $DEPLOY_HOST
+cd /urbankizomba.eu
+docker compose -p urbankizomba exec php bin/console doctrine:migrations:migrate --dry-run
+docker compose -p urbankizomba exec php bin/console doctrine:migrations:migrate --no-interaction
+```
+
+Posters live in the `uploads` volume, shared between `php` (writes) and
+`caddy` (serves).

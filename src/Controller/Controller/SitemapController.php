@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\Controller\Controller;
 
 use App\Enum\Locale;
-use App\Service\Content\Article;
+use App\Repository\CityRepository;
+use App\Repository\EventRepository;
 use App\Service\Content\ArticleLibrary;
 use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,78 +18,67 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 final class SitemapController extends AbstractController
 {
     /**
-     * The pages a search engine should know about: everything a visitor can read
-     * without an account.
-     *
-     * Listed rather than discovered. Walking the route collection would pick up
-     * every route the app has and the interesting failure mode is the wrong
-     * direction — a dashboard or an onboarding step quietly published because
-     * somebody added a route, not a marketing page missing from a file anyone
-     * can read.
+     * The static pages a search engine should know about. Listed rather than
+     * discovered: walking the route collection would pick up the account and
+     * admin pages, and the interesting failure is a private page published by
+     * accident, not a public one missing from a list anyone can read.
      */
     private const array PUBLIC_ROUTES = [
         'app_home',
-        'app_calculator',
-        'app_pricing',
+        'app_events',
+        'app_socials',
+        'app_cities',
+        'app_about',
+        'app_newsletter',
         'app_terms',
         'app_privacy',
     ];
 
-    /**
-     * Declared for the default language alone, which is the one whose prefix is
-     * empty — so this is /sitemap.xml and there is no /en/sitemap.xml competing
-     * with it. A sitemap is one file listing every language, not one per
-     * language.
-     */
-    #[Route(path: [
-        'cs' => '/sitemap.xml',
-    ], name: 'app_sitemap', methods: ['GET'])]
-    public function sitemap(UrlGeneratorInterface $urlGenerator, ArticleLibrary $articles): Response
-    {
+    #[Route('/sitemap.xml', name: 'app_sitemap', methods: ['GET'])]
+    public function sitemap(
+        UrlGeneratorInterface $urlGenerator,
+        EventRepository $eventRepository,
+        CityRepository $cityRepository,
+        ArticleLibrary $articles,
+    ): Response {
+        $today = new DateTimeImmutable('today');
         $pages = [];
 
         foreach (self::PUBLIC_ROUTES as $route) {
             $pages[] = $this->page($urlGenerator, $route);
         }
 
-        // The article index and one entry per article, both restricted to the
-        // languages the texts actually exist in. The routes are published in
-        // every language, so without that restriction the sitemap would hand a
-        // crawler an English index listing nothing and English article URLs that
-        // 404.
-        //
-        // Read from the directory rather than added to the constant above:
-        // writing an article should not also mean editing a controller for it to
-        // be found.
+        // Every city with something on it, and every upcoming event. Past
+        // events are left out: the page still resolves, but it is not
+        // something anyone should be sent to.
+        foreach ($cityRepository->findActiveWithCounts($today) as $row) {
+            $pages[] = $this->page($urlGenerator, 'app_city', [
+                'slug' => $row['city']->getSlug(),
+            ]);
+        }
+
+        foreach ($eventRepository->upcomingQuery($today)->getQuery()->getResult() as $event) {
+            $pages[] = $this->page($urlGenerator, 'app_event', [
+                'slug' => $event->getSlug(),
+            ], $event->getUpdatedAt());
+        }
+
         $published = $articles->publishedLocales();
 
-        $pages[] = $this->page(
-            $urlGenerator,
-            'app_articles',
-            locales: $published,
-            lastModified: $articles->lastUpdated(Locale::DEFAULT->value),
-        );
+        if ($published !== []) {
+            $pages[] = $this->page($urlGenerator, 'app_articles', [], $articles->lastUpdated(Locale::DEFAULT->value), $published);
 
-        foreach ($published as $locale) {
-            foreach ($articles->all($locale) as $article) {
-                $pages[] = $this->page(
-                    $urlGenerator,
-                    'app_article',
-                    [
+            foreach ($published as $locale) {
+                foreach ($articles->all($locale) as $article) {
+                    $pages[] = $this->page($urlGenerator, 'app_article', [
                         'slug' => $article->slug,
-                    ],
-                    $article->alternates,
-                    $article->updated,
-                );
+                    ], $article->updated, $article->alternates);
+                }
             }
         }
 
-        // An article published in two languages is one page with two alternates,
-        // and the loop above reaches it once per language.
-        $pages = array_values(array_unique($pages, SORT_REGULAR));
-
         $pages = array_values(array_filter(
-            $pages,
+            array_unique($pages, SORT_REGULAR),
             static fn (?array $page): bool => $page !== null,
         ));
 
@@ -101,21 +91,10 @@ final class SitemapController extends AbstractController
     }
 
     /**
-     * One sitemap entry: the page in every language it is actually published in.
-     *
-     * A route can be declared in one language alone — the articles are Czech and
-     * {@see ArticleController} says why — and asking the generator for a language
-     * it has no path in throws. Skipping that language is the whole point: a
-     * sitemap listing an English URL that 404s is worse than one that does not
-     * mention English at all.
-     *
-     * Null when the route is published in no language we serve, which means it
-     * belongs in no sitemap.
+     * One sitemap entry: the page in every language it is published in.
      *
      * @param array<string, string> $parameters
-     * @param list<string>|null     $locales    languages this page's content
-     *                                          exists in; null means every
-     *                                          language the route generates
+     * @param list<string>|null     $locales
      *
      * @return array{alternates: array<string, string>, x_default: string, lastmod: ?string}|null
      */
@@ -123,8 +102,8 @@ final class SitemapController extends AbstractController
         UrlGeneratorInterface $urlGenerator,
         string $route,
         array $parameters = [],
-        ?array $locales = null,
         ?DateTimeImmutable $lastModified = null,
+        ?array $locales = null,
     ): ?array {
         $alternates = [];
 
@@ -153,13 +132,7 @@ final class SitemapController extends AbstractController
 
         return [
             'alternates' => $alternates,
-            // Same choice the hreflang tags make: a visitor who has expressed no
-            // language preference is served Czech — or, for a page not published
-            // in Czech, whichever language it does exist in.
             'x_default' => $alternates[Locale::DEFAULT->value] ?? reset($alternates),
-            // Only where it is a real date the author maintains. Everything else
-            // here would have to invent one, and an invented lastmod is worse
-            // than none.
             'lastmod' => $lastModified?->format('Y-m-d'),
         ];
     }

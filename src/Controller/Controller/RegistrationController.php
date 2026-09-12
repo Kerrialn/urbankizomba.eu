@@ -11,7 +11,6 @@ use App\Form\Type\RegistrationFormType;
 use App\Repository\UserRepository;
 use App\Security\LoginCodeAuthenticator;
 use App\Service\Auth\LoginCodeService;
-use App\Service\Billing\ReferralAttribution;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -30,18 +29,12 @@ final class RegistrationController extends AbstractController
         EntityManagerInterface $entityManager,
         UserRepository $userRepository,
         LoginCodeService $loginCodeService,
-        ReferralAttribution $referralAttribution,
         TranslatorInterface $translator,
         #[Autowire(service: 'limiter.login_code_request')]
         RateLimiterFactoryInterface $loginCodeRequestLimiter,
     ): Response {
-        // FULLY, not merely "has a user", for the same reason as the login
-        // page: a remember-me cookie makes getUser() non-null while granting
-        // only IS_AUTHENTICATED_REMEMBERED, which reaches no page in this app.
-        // Turning that visitor away from registration left them able to neither
-        // register nor get in.
         if ($this->isGranted('IS_AUTHENTICATED_FULLY')) {
-            return $this->redirectToRoute('app_home');
+            return $this->redirectToRoute('app_account');
         }
 
         $dto = new RegistrationFormDto();
@@ -56,27 +49,13 @@ final class RegistrationController extends AbstractController
 
                 return $this->render('security/register.html.twig', [
                     'form' => $form,
-                    'referredBy' => $referralAttribution->referrerFor(
-                        $referralAttribution->pending($request->getSession()),
-                    ),
                 ]);
             }
 
             // An address that already exists is not told so — it simply gets a
             // code, which lands it in the same place a sign-in would.
-            if ($userRepository->findOneBy([
-                'email' => $email,
-            ]) === null) {
-                $user = new User($email);
-
-                // Off the session and onto the row, because the next step is an
-                // emailed code that is as likely to be opened on a phone. Only
-                // for a genuinely new account: an existing user arriving on
-                // somebody's link is not a referral, and their practice already
-                // exists.
-                $user->setReferredByCode($referralAttribution->pending($request->getSession()));
-
-                $entityManager->persist($user);
+            if (! $userRepository->findOneByEmail($email) instanceof \App\Entity\User) {
+                $entityManager->persist(new User($email));
                 $entityManager->flush();
             }
 
@@ -88,9 +67,6 @@ final class RegistrationController extends AbstractController
 
         return $this->render('security/register.html.twig', [
             'form' => $form,
-            'referredBy' => $referralAttribution->referrerFor(
-                $referralAttribution->pending($request->getSession()),
-            ),
         ]);
     }
 }

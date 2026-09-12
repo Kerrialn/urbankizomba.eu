@@ -20,7 +20,7 @@ use Symfony\Contracts\Cache\ItemInterface;
  * The articles on disk, parsed.
  *
  * Not a Doctrine repository despite the shape: the articles are Markdown files
- * in content/articles, so this reads the filesystem. Named a library rather than
+ * in content/guides, so this reads the filesystem. Named a library rather than
  * a repository so nobody goes looking for an entity.
  *
  * Each file is cached against its own mtime, which means an edit invalidates
@@ -34,7 +34,7 @@ final readonly class ArticleLibrary
 
     public function __construct(
         private CacheInterface $cache,
-        #[Autowire('%kernel.project_dir%/content/articles')]
+        #[Autowire('%kernel.project_dir%/content/guides')]
         private string $directory,
     ) {
         $environment = new Environment([
@@ -217,8 +217,8 @@ final readonly class ArticleLibrary
 
         return new Article(
             slug: (string) $meta['slug'],
-            locale: (string) ($meta['locale'] ?? 'cs'),
-            alternates: array_map('strval', (array) ($meta['alternates'] ?? [$meta['locale'] ?? 'cs'])),
+            locale: (string) ($meta['locale'] ?? 'en'),
+            alternates: array_map('strval', (array) ($meta['alternates'] ?? [$meta['locale'] ?? 'en'])),
             title: (string) $meta['title'],
             metaDescription: (string) $meta['meta_description'],
             heading: $heading !== '' ? $heading : (string) $meta['title'],

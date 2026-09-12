@@ -1,0 +1,23 @@
+{# One social in a directory list. `confirmation_days` decides when the
+   "last confirmed" line turns into a warning. #}
+<li class="flex flex-col gap-1 py-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+    <div class="min-w-0">
+        <a href="{{ path('app_event', { slug: social.slug }) }}" class="font-semibold text-heading hover:text-primary hover:underline">
+            {{ social.title }}
+        </a>
+        <p class="mt-0.5 text-sm text-body">
+            {% if social.schedule %}{{ social.schedule }}{% endif %}
+            {% if social.venue %}<span class="text-body-subtle"> · {{ social.venue }}</span>{% endif %}
+        </p>
+        {% if show_city|default(false) %}
+            <p class="mt-0.5 text-sm text-body-subtle">{{ social.city.name }}, {{ social.city.countryName }}</p>
+        {% endif %}
+    </div>
+    <p class="shrink-0 text-xs {{ social.isStale(confirmation_days) ? 'text-warning' : 'text-body-subtle' }}">
+        {% if social.lastConfirmedAt %}
+            {{ 'social.last_confirmed'|trans({ date: social.lastConfirmedAt|format_date('medium') }) }}
+        {% else %}
+            {{ 'social.unconfirmed'|trans }}
+        {% endif %}
+    </p>
+</li>

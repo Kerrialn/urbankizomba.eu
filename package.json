@@ -7,6 +7,7 @@
         "preview": "vite preview"
     },
     "devDependencies": {
+        "@symfony/stimulus-bridge": "^3.2.0 || ^4.0.0",
         "@symfony/ux-turbo": "file:vendor/symfony/ux-turbo/assets",
         "@tailwindcss/forms": "^0.5.11",
         "@tailwindcss/vite": "^4.1.0",

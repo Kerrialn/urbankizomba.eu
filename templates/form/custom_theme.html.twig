@@ -1,4 +1,4 @@
-{# templates/form/floating_theme.html.twig #}
+{# Floating-label rows for every text-like input, matching Flowbite's pattern. #}
 
 {% block text_row %}
     {# Define the exact classes from your Flowbite snippet #}
@@ -51,6 +51,23 @@
 {% block url_row %}{{ block('text_row') }}{% endblock %}
 {% block tel_row %}{{ block('text_row') }}{% endblock %}
 {% block choice_row %}{{ block('text_row') }}{% endblock %}
+{% block entity_row %}{{ block('text_row') }}{% endblock %}
+{% block country_row %}{{ block('text_row') }}{% endblock %}
+{% block date_row %}{{ block('text_row') }}{% endblock %}
+
+{# A file input has no floating label: the browser draws its own button, and
+   a label sliding over it reads as a bug. Plain label above, input below. #}
+{% block file_row %}
+    <div class="mb-5">
+        {{ form_label(form, null, { label_attr: { class: 'mb-2 block text-sm font-medium text-heading' } }) }}
+        {% set attr = attr|merge({ class: ('block w-full cursor-pointer rounded-lg border border-default-medium bg-white text-sm text-body file:mr-4 file:rounded-l-lg file:border-0 file:bg-neutral-secondary-medium file:px-4 file:py-2.5 file:text-sm file:font-medium file:text-heading hover:file:bg-neutral-tertiary ' ~ attr.class|default(''))|trim }) %}
+        {{ form_widget(form, { attr: attr }) }}
+        {% if help is not empty %}
+            <div class="mt-1 text-sm text-body-subtle">{{ form_help(form) }}</div>
+        {% endif %}
+        {{ form_errors(form) }}
+    </div>
+{% endblock %}
 {# Textarea: same floating label, but the resting (empty) label sits at the TOP
    instead of vertically centred — appropriate for a multi-line field. #}
 {% block textarea_row %}

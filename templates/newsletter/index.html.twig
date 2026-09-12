@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'newsletter.meta_title'|trans }} · {{ site.name }}{% endblock %}
+{% block meta_description %}{{ 'newsletter.meta_description'|trans }}{% endblock %}
+
+{% block body %}
+    <div class="mx-auto max-w-3xl px-4 py-12 sm:py-16">
+        {{ include('newsletter/_block.html.twig', { form: form }) }}
+
+        <div class="mt-10 space-y-4 text-body">
+            <h2 class="text-xl font-bold text-heading">{{ 'newsletter.what.heading'|trans }}</h2>
+            <ul class="list-disc space-y-1.5 pl-6">
+                <li>{{ 'newsletter.what.one'|trans }}</li>
+                <li>{{ 'newsletter.what.two'|trans }}</li>
+                <li>{{ 'newsletter.what.three'|trans }}</li>
+            </ul>
+            <p class="text-sm text-body-subtle">{{ 'newsletter.what.unsubscribe'|trans }}</p>
+        </div>
+    </div>
+{% endblock %}

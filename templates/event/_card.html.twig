@@ -1,0 +1,41 @@
+{# One event in a grid. Used on the home page, the events list and the city
+   page, so the three cannot drift in what they show. #}
+<a href="{{ path('app_event', { slug: event.slug }) }}"
+   class="group flex flex-col overflow-hidden rounded-2xl border border-default bg-white shadow-xs transition hover:border-brand-medium hover:shadow-md">
+    <div class="relative aspect-[4/3] w-full overflow-hidden bg-brand-soft">
+        {% if event.poster %}
+            <img src="{{ asset('uploads/posters/' ~ event.poster) }}"
+                 alt=""
+                 loading="lazy"
+                 class="h-full w-full object-cover transition group-hover:scale-[1.02]">
+        {% else %}
+            {# No poster: the type, large, on the brand gradient. Better than a
+               grey box, and honest about what is missing. #}
+            <div class="flex h-full w-full items-center justify-center bg-gradient-to-br from-brand-soft via-brand-softer to-accent-soft">
+                <span class="text-2xl font-bold uppercase tracking-widest text-brand-medium">
+                    {{ event.type.label|trans }}
+                </span>
+            </div>
+        {% endif %}
+        <span class="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-brand-strong">
+            {{ event.type.label|trans }}
+        </span>
+    </div>
+
+    <div class="flex flex-1 flex-col p-4">
+        {% if event.startsAt %}
+            <p class="text-sm font-medium text-primary">
+                <time datetime="{{ event.startsAt|date('Y-m-d') }}">{{ event.startsAt|format_date(pattern: 'EEE d MMM yyyy') }}</time>
+                {% if event.multiDay %}
+                    – <time datetime="{{ event.endsAt|date('Y-m-d') }}">{{ event.endsAt|format_date(pattern: 'd MMM') }}</time>
+                {% endif %}
+            </p>
+        {% elseif event.schedule %}
+            <p class="text-sm font-medium text-primary">{{ event.schedule }}</p>
+        {% endif %}
+        <h3 class="mt-1 font-semibold leading-snug text-heading group-hover:text-primary">{{ event.title }}</h3>
+        <p class="mt-1 text-sm text-body-subtle">
+            {{ event.city.name }}, {{ event.city.countryName }}
+        </p>
+    </div>
+</a>

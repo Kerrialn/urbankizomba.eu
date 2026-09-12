@@ -12,11 +12,16 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Uid\Uuid;
 
+/**
+ * Somebody who can submit events. There is no profile: an account is a verified
+ * email address and nothing more, because the only thing it is for is knowing
+ * who to write back to about a submission.
+ */
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'uniq_user_email', columns: ['email'])]
 #[UniqueEntity(fields: ['email'], message: 'user.email.already_used')]
-class User implements UserInterface
+class User implements UserInterface, \Stringable
 {
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
@@ -28,29 +33,13 @@ class User implements UserInterface
     #[ORM\Column(type: Types::JSON)]
     private array $roles = [];
 
-    #[ORM\ManyToOne(targetEntity: Practice::class, inversedBy: 'users')]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
-    private ?Practice $practice = null;
-
-    /**
-     * The referral code this account arrived on, if it did.
-     *
-     * Held on the user rather than only in the session because a practice does
-     * not exist yet at registration, and the sign-in code that comes next is
-     * routinely opened on a phone — a different session entirely. This column is
-     * what survives that, and it is spent when the practice is created.
-     */
-    #[ORM\Column(length: 12, nullable: true)]
-    private ?string $referredByCode = null;
-
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private DateTimeImmutable $createdAt;
 
     public function __construct(
         #[ORM\Column(length: 180)]
         private string $email
-    )
-    {
+    ) {
         $this->id = Uuid::v7();
         $this->createdAt = new DateTimeImmutable();
     }
@@ -94,24 +83,9 @@ class User implements UserInterface
         $this->roles = $roles;
     }
 
-    public function getPractice(): ?Practice
+    public function isAdmin(): bool
     {
-        return $this->practice;
-    }
-
-    public function setPractice(?Practice $practice): void
-    {
-        $this->practice = $practice;
-    }
-
-    public function getReferredByCode(): ?string
-    {
-        return $this->referredByCode;
-    }
-
-    public function setReferredByCode(?string $referredByCode): void
-    {
-        $this->referredByCode = $referredByCode;
+        return in_array('ROLE_ADMIN', $this->roles, true);
     }
 
     public function getCreatedAt(): DateTimeImmutable
@@ -121,5 +95,10 @@ class User implements UserInterface
 
     public function eraseCredentials(): void
     {
+    }
+
+    public function __toString(): string
+    {
+        return $this->email;
     }
 }

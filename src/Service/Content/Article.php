@@ -16,7 +16,7 @@ use DateTimeImmutable;
  *
  * Immutable and free of Doctrine: articles are files in the repository, edited
  * and reviewed like code, not rows somebody can change in production. That is
- * the point of keeping them here — a claim about úhrady is a deployment, with a
+ * the point of keeping them here — a change to a guide is a deployment, with a
  * diff and a review, not a CMS edit.
  */
 final readonly class Article
@@ -97,8 +97,7 @@ final readonly class Article
     {
         $publisher = [
             '@type' => 'Organization',
-            'name' => $company['trading_name'] ?? '',
-            'legalName' => $company['legal_name'] ?? '',
+            'name' => $company['name'] ?? '',
             'logo' => [
                 '@type' => 'ImageObject',
                 'url' => $logoUrl,

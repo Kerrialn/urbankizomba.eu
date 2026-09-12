@@ -7,38 +7,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {# Captured rather than printed straight into the tags: the same two strings
        have to reach <title>, og: and twitter:, and a page that overrides the
-       block should not have to override them three more times. Capturing a
-       block leaves it overridable by a child template exactly as before. #}
-    {% set meta_title %}{% block title %}{{ company.trading_name }}{% endblock %}{% endset %}
-    {% set meta_desc %}{% block meta_description %}{% endblock %}{% endset %}
+       block should not have to override them three more times. #}
+    {% set meta_title %}{% block title %}{{ site.name }}{% endblock %}{% endset %}
+    {% set meta_desc %}{% block meta_description %}{{ 'meta.default_description'|trans }}{% endblock %}{% endset %}
     {% set meta_title = meta_title|trim %}
     {% set meta_desc = meta_desc|trim %}
 
     <title>{{ meta_title }}</title>
     <meta name="description" content="{{ meta_desc }}">
     {% block robots %}{% endblock %}
-    {# 64 and 180px copies of public/images/logo.png, which is 3125px square and
-       293KB — far too heavy to ship on every page for a 32px mark. #}
     <link rel="icon" href="{{ asset('images/logo-64.png') }}" sizes="any">
+    <link rel="icon" href="{{ asset('images/logo.svg') }}" type="image/svg+xml">
     <link rel="apple-touch-icon" href="{{ asset('images/logo-180.png') }}">
-    {# Inter is self-hosted — see the @font-face block at the top of
-       assets/app.css. It used to load from fonts.googleapis.com, which sent
-       every visitor's IP to Google on every page view. #}
     {{ vite_entry_link_tags('app') }}
     {{ vite_entry_script_tags('app') }}
 
-    <!-- 100% privacy-first analytics -->
-    <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-
-    {# Tells search engines /cenik and /en/pricing are one page in two languages,
-       rather than duplicate content. x-default points at Czech: that is what a
-       visitor who has expressed no preference is served. #}
+    {# hreflang: one entry per language the page is published in. With one
+       active language this is a single self-referencing pair, which is still
+       what a crawler expects to find. #}
     {% set alternates = locale_alternates() %}
-    {# A page can exist in fewer languages than its route does. The articles are
-       written in Czech and the route is published in both, so without this the
-       Czech article would advertise an English URL that has nothing behind it —
-       and a hreflang pointing at a 404 is worse than no hreflang. Pages that say
-       nothing keep every language the route can generate. #}
     {% if published_locales is defined %}
         {% set alternates = alternates|filter(a => a.locale.value in published_locales) %}
     {% endif %}
@@ -49,37 +36,29 @@
         {%- endif %}
     {% endfor %}
 
-    {# The route-generated URL, not app.request.uri: the landing page is reachable
-       with a ?ref= on it and every one of those is the same document. Falls back
-       to the request only where there is no route to generate from, which is the
-       error pages. #}
+    {# The route-generated URL, not app.request.uri: the events list is reachable
+       with filters and a page number on it, and every one of those is the same
+       document as far as a search engine should be concerned. #}
     {% set current_alternate = alternates|filter(a => a.current)|first|default(null) %}
     {% set canonical_url = current_alternate ? current_alternate.absolute_url : app.request.uri %}
     <link rel="canonical" href="{{ canonical_url }}">
 
-    {# Open Graph. Kaltra spreads by one doctor sending another a link, and an
-       untagged URL pasted into a message or a professional group renders as bare
-       grey text — so these are distribution, not decoration. The card art is
-       per-language because the tagline on it is words. #}
+    {# Open Graph. The site spreads by one dancer pasting a link into a group
+       chat, and an untagged URL renders as bare grey text. #}
     <meta property="og:type" content="{% block og_type %}website{% endblock %}">
-    <meta property="og:site_name" content="{{ company.trading_name }}">
+    <meta property="og:site_name" content="{{ site.name }}">
     <meta property="og:title" content="{{ meta_title }}">
     <meta property="og:description" content="{{ meta_desc }}">
     <meta property="og:url" content="{{ canonical_url }}">
     {% if current_alternate %}
         <meta property="og:locale" content="{{ current_alternate.locale.openGraphLocale() }}">
     {% endif %}
-    {% for alternate in alternates|filter(a => not a.current) %}
-        <meta property="og:locale:alternate" content="{{ alternate.locale.openGraphLocale() }}">
-    {% endfor %}
     {% block og_image %}
-        <meta property="og:image" content="{{ absolute_url(asset('images/og-' ~ (app.request.locale == 'cs' ? 'cs' : 'en') ~ '.png')) }}">
+        <meta property="og:image" content="{{ absolute_url(asset('images/og.png')) }}">
         <meta property="og:image:width" content="1200">
         <meta property="og:image:height" content="630">
         <meta property="og:image:alt" content="{{ 'meta.og_image_alt'|trans }}">
-        {# Twitter falls back to og:image, but a page overriding this block should
-           only have to say the image once. #}
-        <meta name="twitter:image" content="{{ absolute_url(asset('images/og-' ~ (app.request.locale == 'cs' ? 'cs' : 'en') ~ '.png')) }}">
+        <meta name="twitter:image" content="{{ absolute_url(asset('images/og.png')) }}">
     {% endblock %}
 
     <meta name="twitter:card" content="summary_large_image">
@@ -87,7 +66,6 @@
     <meta name="twitter:description" content="{{ meta_desc }}">
 
     {% block og_meta %}{% endblock %}
-
     {% block structured_data %}{% endblock %}
     {% block head_links %}{% endblock %}
 </head>
@@ -95,72 +73,14 @@
 
 {% block navbar %}
     <header class="border-b border-default bg-white">
-        {# Wrapping flex rather than one row: on a phone the links do not fit
-           beside the logo, so they collapse behind the toggle and open as a full
-           width panel underneath. The order utilities put the panel back between
-           the logo and the language switcher on desktop. #}
         <nav class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-2 md:h-14 md:flex-nowrap md:py-0">
             <a href="{{ path('app_home') }}"
                class="flex items-center gap-2 text-lg font-bold tracking-tight text-primary">
-                <img src="{{ asset('images/logo-64.png') }}" alt="" width="32" height="32" class="h-8 w-8">
-                {{ company.trading_name }}
+                <img src="{{ asset('images/logo.svg') }}" alt="" width="32" height="32" class="h-8 w-8">
+                {{ site.name }}
             </a>
 
             <div class="flex items-center gap-2 md:order-1 md:ml-auto">
-                {% block language_switcher %}
-                    {# Outside nav_actions on purpose: that block is overridden
-                       during onboarding, which is exactly where someone who does
-                       not read Czech needs the switch. Outside the collapsible
-                       panel too — two characters always fit. #}
-                    {% set alternates = locale_alternates() %}
-                    {% if published_locales is defined %}
-                        {% set alternates = alternates|filter(a => a.locale.value in published_locales) %}
-                    {% endif %}
-                    {% if alternates|length > 1 %}
-                        {% set current = alternates|filter(a => a.current)|first %}
-
-                        {# Flowbite's dropdown, matching the collapse toggle beside
-                           it. A segmented pair of buttons stopped scaling the
-                           moment a third language became plausible — Locale has
-                           seven cases and two active. #}
-                        <button type="button"
-                                id="language-button"
-                                data-dropdown-toggle="language-menu"
-                                data-dropdown-placement="bottom-end"
-                                aria-haspopup="true"
-                                aria-expanded="false"
-                                class="inline-flex items-center gap-1.5 rounded-base border border-default px-2.5 py-1.5 text-xs font-medium text-body hover:bg-neutral-secondary-medium">
-                            <span class="sr-only">{{ 'nav.language'|trans }}</span>
-                            {{ ux_icon('tabler:world', { style: 'height: 1rem; width: 1rem;' }) }}
-                            <span aria-hidden="true">{{ (current ? current.locale : constant('App\\Enum\\Locale::DEFAULT')).value|upper }}</span>
-                            {{ ux_icon('tabler:chevron-down', { style: 'height: 0.875rem; width: 0.875rem;' }) }}
-                        </button>
-
-                        <div id="language-menu"
-                             class="z-50 hidden min-w-36 overflow-hidden rounded-base border border-default bg-white shadow-lg">
-                            <ul class="py-1 text-sm" aria-labelledby="language-button">
-                                {% for alternate in alternates %}
-                                    <li>
-                                        {# hreflang and lang stay on the link: they tell a
-                                           screen reader and a crawler what is on the other
-                                           end, which a styled div cannot. #}
-                                        <a href="{{ alternate.url }}"
-                                           hreflang="{{ alternate.locale.value }}"
-                                           lang="{{ alternate.locale.value }}"
-                                           {% if alternate.current %}aria-current="true"{% endif %}
-                                           class="flex items-center justify-between gap-3 px-3 py-2 {{ alternate.current
-                                               ? 'bg-brand-softer font-medium text-brand-strong'
-                                               : 'text-body hover:bg-neutral-secondary-soft' }}">
-                                            {{ alternate.locale.nativeName }}
-                                            <span class="text-xs text-body-subtle">{{ alternate.locale.value|upper }}</span>
-                                        </a>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    {% endif %}
-                {% endblock %}
-
                 <button type="button"
                         data-collapse-toggle="nav-menu"
                         aria-controls="nav-menu"
@@ -174,54 +94,24 @@
             <div id="nav-menu" class="hidden w-full md:order-2 md:block md:w-auto">
                 <div class="flex flex-col gap-1 border-t border-default pt-3 pb-1 md:flex-row md:items-center md:gap-2 md:border-0 md:p-0">
                     {% block nav_actions %}
-                        {# FULLY, never app.user. A remember-me cookie outlives the
-                           session a deploy wipes and makes app.user truthy while
-                           leaving the visitor only IS_AUTHENTICATED_REMEMBERED —
-                           and every destination below demands FULLY, so the navbar
-                           was offering a signed-out visitor links that bounce them
-                           to the login page. Same root cause as the redirect loop
-                           RememberMeLoopTest pins. #}
+                        <a href="{{ path('app_events') }}" class="{{ nav_link_class }}">{{ 'nav.events'|trans }}</a>
+                        <a href="{{ path('app_socials') }}" class="{{ nav_link_class }}">{{ 'nav.socials'|trans }}</a>
+                        <a href="{{ path('app_cities') }}" class="{{ nav_link_class }}">{{ 'nav.cities'|trans }}</a>
+                        <a href="{{ path('app_articles') }}" class="{{ nav_link_class }}">{{ 'nav.guides'|trans }}</a>
+
+                        {# FULLY, never app.user: there is no remember-me cookie
+                           and every signed-in page demands FULLY, so anything
+                           weaker would offer links that bounce. #}
                         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                            {# Destinations, not tasks. The tasks live on the
-                               dashboard, which is also where a practice can see
-                               which of them is worth doing right now — but the
-                               account is somewhere you go, not something you do,
-                               and it was reachable only by guessing it lived
-                               behind the subscription. #}
-                            {% if app.user.practice and app.user.practice.onboarded %}
-                                <a href="{{ path('app_dashboard') }}" class="{{ nav_link_class }}">
-                                    {{ 'nav.dashboard'|trans }}
-                                </a>
-                                <a href="{{ path('app_account') }}" class="{{ nav_link_class }}">
-                                    {{ 'nav.account'|trans }}
-                                </a>
+                            <a href="{{ path('app_account') }}" class="{{ nav_link_class }}">{{ 'nav.account'|trans }}</a>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <a href="{{ path('admin') }}" class="{{ nav_link_class }}">{{ 'nav.admin'|trans }}</a>
                             {% endif %}
-                            {% if is_granted(constant('App\\Enum\\UserRoleEnum::ROLE_ADMIN').name) %}
-                                <a href="{{ path('app_admin') }}" class="{{ nav_link_class }}">
-                                    {{ 'nav.admin'|trans }}
-                                </a>
-                            {% endif %}
-                            <a href="{{ path('app_logout') }}" class="{{ nav_link_class }}">
-                                {{ 'nav.logout'|trans }}
-                            </a>
+                            <a href="{{ path('app_logout') }}" class="{{ nav_link_class }}">{{ 'nav.logout'|trans }}</a>
                         {% else %}
-                            {# Pricing is a question people ask before they sign
-                               up, not after. The calculator is the one before
-                               that: what the practice is losing now, which is
-                               what makes the price worth reading. #}
-                            <a href="{{ path('app_calculator') }}" class="{{ nav_link_class }}">
-                                {{ 'nav.calculator'|trans }}
-                            </a>
-                            <a href="{{ path('app_pricing') }}" class="{{ nav_link_class }}">
-                                {{ 'pricing.title'|trans }}
-                            </a>
-                            <a href="{{ path('app_login') }}" class="{{ nav_link_class }}">
-                                {{ 'nav.login'|trans }}
-                            </a>
-                            <a href="{{ path('app_register') }}" class="{{ nav_cta_class }}">
-                                {{ 'nav.register'|trans }}
-                            </a>
+                            <a href="{{ path('app_login') }}" class="{{ nav_link_class }}">{{ 'nav.login'|trans }}</a>
                         {% endif %}
+                        <a href="{{ path('app_submit') }}" class="{{ nav_cta_class }}">{{ 'nav.submit'|trans }}</a>
                     {% endblock %}
                 </div>
             </div>
@@ -229,18 +119,12 @@
     </header>
 {% endblock %}
 
-{% if sms_delivery.dryRun %}
-    <div class="bg-warning-medium px-4 py-2 text-center text-xs font-medium text-warning-strong">
-        {{ 'sms.dry_run_banner'|trans }}
-    </div>
-{% endif %}
-
 {% for label, messages in app.flashes %}
     {% for message in messages %}
         <div class="mx-auto max-w-7xl px-4 pt-4">
             <div class="rounded-base px-4 py-3 text-sm
                         {{ label == 'success' ? 'bg-success-medium text-success-strong'
-                         : label == 'danger'  ? 'bg-danger-medium text-danger-strong'
+                         : label == 'error'  ? 'bg-danger-medium text-danger-strong'
                          : 'bg-brand-soft text-brand-strong' }}">
                 {{ message }}
             </div>
@@ -251,50 +135,35 @@
 <main>{% block body %}{% endblock %}</main>
 
 {% block footer %}
-    {# Two groups rather than one run-on line: who we are, and where to go next.
-       They were previously interleaved in a single span, which read as one long
-       sentence with links buried in the middle of it. #}
-    <footer class="mt-16 border-t border-default">
+    <footer class="mt-16 border-t border-default bg-white">
         <div class="mx-auto flex max-w-7xl flex-col gap-8 px-4 py-10 sm:flex-row sm:justify-between">
-
-            <div class="text-sm text-body-subtle">
+            <div class="max-w-sm text-sm text-body-subtle">
                 <div class="flex items-center gap-2">
-                    <img src="{{ asset('images/logo-64.png') }}" alt=""
-                         width="24" height="24" class="h-6 w-6 shrink-0">
-                    <span class="font-semibold text-heading">{{ company.trading_name }}</span>
+                    <img src="{{ asset('images/logo.svg') }}" alt="" width="24" height="24" class="h-6 w-6 shrink-0">
+                    <span class="font-semibold text-heading">{{ site.name }}</span>
                 </div>
-
-                {# The legal identity a Czech company has to show, on its own
-                   lines rather than run together with dots. #}
-                <p class="mt-3 leading-relaxed">
-                    {{ company.legal_name }}<br>
-                    {{ 'footer.company_number'|trans }} {{ company.company_number }}<br>
-                    {{ company.street }}, {{ company.postcode }} {{ company.city }}
+                <p class="mt-3 leading-relaxed">{{ 'footer.blurb'|trans }}</p>
+                <p class="mt-3">
+                    <a href="mailto:{{ site.email }}" class="hover:text-body hover:underline">{{ site.email }}</a>
+                    {% if site.instagram %}
+                        · <a href="{{ site.instagram }}" rel="me noopener" class="hover:text-body hover:underline">Instagram</a>
+                    {% endif %}
                 </p>
             </div>
 
             <nav class="text-sm" aria-label="{{ 'footer.links'|trans }}">
-                <ul class="space-y-2">
+                <ul class="grid grid-cols-2 gap-x-8 gap-y-2">
                     {% set links = [
-                        { path: path('app_calculator'), label: 'nav.calculator' },
-                        { path: path('app_articles'), label: 'footer.articles' },
-                        { path: path('app_pricing'), label: 'pricing.title' },
+                        { path: path('app_events'), label: 'nav.events' },
+                        { path: path('app_socials'), label: 'nav.socials' },
+                        { path: path('app_cities'), label: 'nav.cities' },
+                        { path: path('app_articles'), label: 'nav.guides' },
+                        { path: path('app_submit'), label: 'nav.submit' },
+                        { path: path('app_newsletter'), label: 'nav.newsletter' },
+                        { path: path('app_about'), label: 'nav.about' },
                         { path: path('app_terms'), label: 'footer.terms' },
                         { path: path('app_privacy'), label: 'footer.privacy' },
                     ] %}
-                    {# Signed-in only: the form requires an account, so showing it
-                       to a visitor buys them a redirect to the login page. In the
-                       footer it is on every page of the app, including the
-                       onboarding steps someone can get stuck on.
-
-                       FULLY rather than app.user, for the same reason as the
-                       navbar above: a remembered visitor is not signed in as far
-                       as any page in this app is concerned. #}
-                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                        {% set links = links|merge([
-                            { path: path('app_feedback'), label: 'footer.feedback' },
-                        ]) %}
-                    {% endif %}
                     {% for link in links %}
                         <li>
                             <a href="{{ link.path }}" class="text-body-subtle hover:text-body hover:underline">
@@ -302,11 +171,6 @@
                             </a>
                         </li>
                     {% endfor %}
-                    <li>
-                        <a href="mailto:{{ company.email }}" class="text-body-subtle hover:text-body hover:underline">
-                            {{ company.email }}
-                        </a>
-                    </li>
                 </ul>
             </nav>
         </div>

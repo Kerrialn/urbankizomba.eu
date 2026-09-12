@@ -3,9 +3,9 @@
 {% block title %}{{ 'articles.meta_title'|trans }}{% endblock %}
 {% block meta_description %}{{ 'articles.meta_description'|trans }}{% endblock %}
 
-{# The route is published in every language, the texts are not. An index with
-   nothing on it is a page a crawler should not keep — it is left reachable, so a
-   visitor who guesses the URL gets an explanation rather than a 404. #}
+{# An index with nothing on it is a page a crawler should not keep. It is left
+   reachable, so a visitor who guesses the URL gets an explanation rather than
+   a 404. #}
 {% block robots %}
     {% if articles is empty %}
         <meta name="robots" content="noindex, follow">
@@ -45,13 +45,13 @@
         <aside class="mt-10 rounded-2xl border border-default bg-neutral-secondary-soft p-6 text-center">
             <p class="font-semibold text-heading">{{ 'articles.cta.heading'|trans }}</p>
             <div class="mt-5 flex flex-col justify-center gap-3 sm:flex-row">
-                <a href="{{ path('app_calculator') }}"
+                <a href="{{ path('app_events') }}"
                    class="rounded-base bg-primary px-5 py-3 font-medium text-white hover:bg-primary-hover">
-                    {{ 'articles.cta.calculator'|trans }}
+                    {{ 'articles.cta.events'|trans }}
                 </a>
-                <a href="{{ path('app_register') }}"
+                <a href="{{ path('app_submit') }}"
                    class="rounded-base border border-default bg-white px-5 py-3 font-medium text-body hover:bg-neutral-secondary-medium">
-                    {{ 'articles.cta.register'|trans }}
+                    {{ 'articles.cta.submit'|trans }}
                 </a>
             </div>
             <p class="mt-4 text-sm text-body-subtle">{{ 'articles.cta.note'|trans }}</p>
