@@ -38,6 +38,11 @@ run beside other projects.
 Run console commands **inside the container**: `DATABASE_URL` points at the
 `database` service hostname, which does not resolve from the host.
 
+Every email goes through Messenger and is sent by the `worker` container. If
+Mailpit stays empty, check `docker compose logs worker`: a worker that came up
+before the first migration created the queue table needs
+`docker compose restart worker`.
+
 For sample data on every page, load the fixtures instead of seeding:
 
 ```bash
