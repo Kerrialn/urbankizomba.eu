@@ -2,33 +2,22 @@ import { Controller } from '@hotwired/stimulus';
 import { createDrawable, createTimeline, utils } from 'animejs';
 
 /**
- * Draws the logo in with anime.js: the disc springs up, then the U is drawn
- * as one stroke and the K's three strokes follow.
+ * Draws the logo in with anime.js once, when the page loads: the disc
+ * springs up, then the U is drawn as one stroke and the K's three strokes
+ * follow. About a second and a half, then it holds.
  *
- * Plays once per browser session on load (Turbo reconnects the controller on
- * every page visit, and a logo that redraws itself on each click is a
- * distraction), again whenever the mark is hovered, and on the page a click on
- * it leads to. Anyone who has asked their OS for less motion never sees it
- * animate.
+ * Turbo reconnects the controller on every page visit, so it plays on each
+ * page. Anyone who has asked their OS for less motion sees the finished mark
+ * straight away.
  */
 export default class extends Controller {
     static targets = ['disc', 'stroke'];
-
-    static SESSION_KEY = 'logo-drawn';
 
     connect() {
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
             return;
         }
 
-        // Nothing is built until it is about to play: building sets the parts
-        // to their hidden starting state, and on a page where the mark has
-        // already played it must simply be there.
-        if (this.#alreadyPlayed()) {
-            return;
-        }
-
-        this.#remember();
         this.timeline = this.#build();
         this.timeline.play();
     }
@@ -36,29 +25,6 @@ export default class extends Controller {
     disconnect() {
         this.timeline?.pause();
         this.timeline = null;
-    }
-
-    /** Hover: redraw from the start, unless it is mid-draw already. */
-    replay() {
-        if (this.timeline && !this.timeline.completed) {
-            return;
-        }
-
-        this.timeline ??= this.#build();
-        this.timeline.restart();
-    }
-
-    /**
-     * Click: the logo is a link home, and Turbo swaps the page before an
-     * animation started here could finish. Forget that it has played, so the
-     * mark draws itself in on the page that arrives instead.
-     */
-    replayOnNextPage() {
-        try {
-            sessionStorage.removeItem(this.constructor.SESSION_KEY);
-        } catch {
-            // Nothing to forget; it plays every time anyway.
-        }
     }
 
     #build() {
@@ -83,21 +49,5 @@ export default class extends Controller {
         });
 
         return timeline;
-    }
-
-    #alreadyPlayed() {
-        try {
-            return sessionStorage.getItem(this.constructor.SESSION_KEY) === '1';
-        } catch {
-            return false;
-        }
-    }
-
-    #remember() {
-        try {
-            sessionStorage.setItem(this.constructor.SESSION_KEY, '1');
-        } catch {
-            // Private mode or storage blocked: it just plays every time.
-        }
     }
 }

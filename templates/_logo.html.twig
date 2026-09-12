@@ -3,7 +3,7 @@
    Usage: include('_logo.html.twig', { size: 'h-11 w-11', animate: true }) #}
 {% set size = size|default('h-8 w-8') %}
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="{{ size }} shrink-0" aria-hidden="true"
-     {% if animate|default(false) %}data-controller="logo" data-action="mouseenter->logo#replay click->logo#replayOnNextPage"{% endif %}>
+     {% if animate|default(false) %}data-controller="logo"{% endif %}>
   <defs>
     <clipPath id="logo-uheight-{{ random() }}"><rect x="0" y="18" width="47.5" height="25.5"/></clipPath>
   </defs>
