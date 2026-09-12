@@ -6,7 +6,7 @@
   <!-- U -->
   <path d="M13,20 v14 a8.5,8.5 0 0 0 17,0 v-14" fill="none" stroke="#ffffff" stroke-width="7.5" stroke-linecap="round"/>
   <!-- K stem -->
-  <line x1="39" y1="20" x2="39" y2="43" stroke="#ffffff" stroke-width="7.5" stroke-linecap="round"/>
+  <line x1="39" y1="20" x2="39" y2="43" stroke="#f472b6" stroke-width="7.5" stroke-linecap="round"/>
   <!-- K arms -->
   <line x1="42" y1="32" x2="53" y2="20" stroke="#f472b6" stroke-width="7.5" stroke-linecap="round"/>
   <line x1="42" y1="32" x2="53" y2="43" stroke="#f472b6" stroke-width="7.5" stroke-linecap="round"/>
