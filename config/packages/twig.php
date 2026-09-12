@@ -16,6 +16,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         ],
         'globals' => [
             'site' => '%app.site%',
+            'hero' => '%app.hero%',
         ],
     ]);
     if ($containerConfigurator->env() === 'test') {

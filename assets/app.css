@@ -128,3 +128,11 @@
         border-color: var(--color-primary);
     }
 }
+
+/* The landing-page clip is decoration. Someone who has asked their OS for less
+   motion gets the poster frame instead; the text on top is unchanged. */
+@media (prefers-reduced-motion: reduce) {
+    .hero-video {
+        display: none;
+    }
+}

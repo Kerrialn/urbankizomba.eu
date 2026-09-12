@@ -62,6 +62,7 @@ cities, a handful of events and four socials.
 | Review submissions | `/admin/event`, filter by status. Approve and Reject are row actions. |
 | Make someone an admin | `bin/console app:user:promote them@example.com` |
 | Send the newsletter | `bin/console app:newsletter:send` (add `--dry-run` to count first). Queues one message per confirmed subscriber; the worker sends them. Refuses to resend to anyone who got one in the last 20 days. |
+| Change the landing-page video | Drop an H.264 MP4 at `public/video/hero.mp4` (muted, ~10 s, under 8 MB) and a still at `public/images/hero-poster.jpg`, then set `credit_name` and `credit_url` in `config/packages/site.php`. Only with the owner's permission; the credit is printed on the hero. Without the file the hero shows the poster alone. |
 | Add a guide | Drop a Markdown file in `content/guides/`. See the README there for the frontmatter. |
 | Add seed cities | Edit `SeedCitiesCommand::CITIES` and rerun `app:cities:seed`. It is idempotent. |
 
