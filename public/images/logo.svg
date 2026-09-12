@@ -1,7 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <rect width="64" height="64" rx="14" fill="#6d28d9"/>
-  <!-- Two dancers in close hold, as two overlapping circles: one violet-light, one pink. -->
-  <circle cx="26" cy="32" r="14" fill="#c4b5fd" opacity="0.95"/>
-  <circle cx="38" cy="32" r="14" fill="#f472b6" opacity="0.9"/>
-  <circle cx="32" cy="32" r="6" fill="#ffffff"/>
+  <!-- Two figures in a close hold: two strokes leaning into each other and
+       touching at the top. Violet leads, pink follows, drawn in front. -->
+  <line x1="18" y1="54" x2="30" y2="12" stroke="#6d28d9" stroke-width="16" stroke-linecap="round"/>
+  <line x1="46" y1="54" x2="34" y2="12" stroke="#db2777" stroke-width="16" stroke-linecap="round"/>
 </svg>
