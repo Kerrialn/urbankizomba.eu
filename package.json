@@ -18,6 +18,7 @@
     "dependencies": {
         "@hotwired/stimulus": "^3.2.2",
         "@hotwired/turbo": "^8.0.20",
+        "animejs": "^4.5.0",
         "flowbite": "^2.5.0"
     }
 }

@@ -1,0 +1,19 @@
+{# The logo as inline SVG, so anime.js can animate its parts (assets/controllers/logo_controller.js).
+   Same geometry as public/images/logo.svg, which stays the source for the favicon and share card.
+   Usage: include('_logo.html.twig', { size: 'h-11 w-11', animate: true }) #}
+{% set size = size|default('h-8 w-8') %}
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="{{ size }} shrink-0" aria-hidden="true"
+     {% if animate|default(false) %}data-controller="logo"{% endif %}>
+  <defs>
+    <clipPath id="logo-uheight-{{ random() }}"><rect x="0" y="18" width="47.5" height="25.5"/></clipPath>
+  </defs>
+  <polygon data-logo-target="disc" points="63.3,27.9 57.1,50.9 43.5,60.2 12.8,53.6 1.6,38.8 3.1,20.9 12.0,7.5 33.0,3.6 56.8,17.2" fill="#4c1d95"/>
+  <g transform="translate(35.44,33.25) skewX(-12) translate(-34,-32)" stroke="#ffffff" stroke-width="7" stroke-linecap="butt" stroke-linejoin="miter" fill="none">
+    <path data-logo-target="stroke" d="M15,18 v17 l5,5 h8 l5,-5 v-17"/>
+    <g>
+      <line data-logo-target="stroke" x1="33" y1="30" x2="33" y2="43.5"/>
+      <path data-logo-target="stroke" d="M33.5,30.75 L46.25,18"/>
+      <path data-logo-target="stroke" d="M33.5,30.75 L46.25,43.5"/>
+    </g>
+  </g>
+</svg>
