@@ -31,7 +31,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     // the hero. Keep the file small (H.264 MP4, no audio track, ~10 seconds,
     // under 8 MB) — it is downloaded by every visitor on every visit.
     $containerConfigurator->parameters()->set('app.hero', [
-        'video' => 'video/hero.mp4',
+        // Set to null to show the poster still alone, keeping the file in place.
+        'video' => null,
+        // 'video' => 'video/hero.mp4',
         'poster' => 'images/hero-poster.jpg',
         'credit_name' => null,
         'credit_url' => null,

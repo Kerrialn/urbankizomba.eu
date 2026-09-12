@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class AppController extends AbstractController
 {
     /**
-     * @param array{video: string, poster: string, credit_name: ?string, credit_url: ?string} $hero
+     * @param array{video: ?string, poster: string, credit_name: ?string, credit_url: ?string} $hero
      */
     #[Route('/', name: 'app_home', methods: ['GET'])]
     public function home(
@@ -33,7 +33,7 @@ final class AppController extends AbstractController
         return $this->render('app/home.html.twig', [
             // Checked here rather than in the template: a <video> pointing at
             // a missing file is a broken hero, and a fresh checkout has none.
-            'hero_video' => is_file($publicDir . '/' . $hero['video']),
+            'hero_video' => $hero['video'] !== null && is_file($publicDir . '/' . $hero['video']),
             'events' => $eventRepository->findUpcoming($today, 8),
             'cities' => $cityRepository->findActiveWithCounts($today),
             'newsletter_form' => $this->createForm(NewsletterSignupFormType::class, new NewsletterSignupDto(), [

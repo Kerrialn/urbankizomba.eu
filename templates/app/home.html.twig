@@ -28,7 +28,7 @@
                    autoplay muted loop playsinline preload="metadata"
                    poster="{{ asset(hero.poster) }}"
                    aria-hidden="true">
-                <source src="{{ asset(hero.video) }}" type="video/mp4">
+                <source src="{{ asset(hero.video|default('')) }}" type="video/mp4">
             </video>
         {% else %}
             <img src="{{ asset(hero.poster) }}" alt="" aria-hidden="true"
