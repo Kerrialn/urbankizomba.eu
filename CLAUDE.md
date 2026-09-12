@@ -3,6 +3,12 @@
 Community events calendar for the urban kiz scene in Europe. See README.md for
 the stack and how to run it.
 
+## Hard rule
+
+**Never push, deploy, publish or take any action that leaves this machine
+without the owner's explicit go-ahead in the current conversation.** Commit
+locally; the owner pushes. Pushing to `main` triggers the release workflow.
+
 ## Conventions
 
 - Run console commands inside the container: `docker compose exec php php bin/console …`
