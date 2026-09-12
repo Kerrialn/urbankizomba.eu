@@ -6,7 +6,7 @@ title: What is urban kiz? A short guide for people new to the scene
 meta_description: Urban kiz explained in plain terms — where it came from, how it differs from kizomba, what a social and a festival look like, and how to find one near you.
 published: 2026-09-12
 updated: 2026-09-12
-author: Urban Kizomba Europe
+author: Urban Kizomba
 category: Getting started
 reading_minutes: 4
 keywords: [urban kiz, urban kizomba, kizomba, dance, Europe, festival, social]

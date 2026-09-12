@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
  */
 return static function (ContainerConfigurator $containerConfigurator): void {
     $containerConfigurator->parameters()->set('app.site', [
-        'name' => 'Urban Kizomba Europe',
+        'name' => 'Urban Kizomba',
         'domain' => 'urbankizomba.eu',
         'tagline' => 'Urban kiz festivals, workshops and socials across Europe',
         'email' => 'hello@urbankizomba.eu',

@@ -3,7 +3,7 @@
 return [
     // Site-wide ---------------------------------------------------------------
     'meta.default_description' => 'Urban kiz festivals, weekenders, workshops, parties and socials across Europe, in one calendar.',
-    'meta.og_image_alt' => 'Urban Kizomba Europe — the urban kiz calendar',
+    'meta.og_image_alt' => 'Urban Kizomba — the urban kiz calendar',
 
     'nav.events' => 'Events',
     'nav.socials' => 'Socials',
@@ -31,7 +31,7 @@ return [
     'back-to-home' => 'Back to the home page',
 
     // Home ----------------------------------------------------------------------
-    'home.meta_title' => 'Urban Kizomba Europe — urban kiz events, festivals and socials',
+    'home.meta_title' => 'Urban Kizomba — urban kiz events, festivals and socials',
     'home.meta_description' => 'Every urban kiz festival, weekender, workshop and social in Europe, in one calendar. Find what is on in your city or the one you are visiting.',
     'home.kicker' => 'Urban kiz in Europe',
     'home.heading' => 'What is on, where, and when.',
@@ -78,7 +78,7 @@ return [
     'social.stale_hint' => 'check before you go',
 
     // Event page -------------------------------------------------------------------
-    'event.meta_description' => '{type} in {city}, {country}. {when}. Details, venue and tickets on Urban Kizomba Europe.',
+    'event.meta_description' => '{type} in {city}, {country}. {when}. Details, venue and tickets on Urban Kizomba.',
     'event.type.festival' => 'Festival',
     'event.type.weekender' => 'Weekender',
     'event.type.workshop' => 'Workshop',
@@ -190,7 +190,7 @@ return [
 
     // About --------------------------------------------------------------------------
     'about.meta_title' => 'About',
-    'about.meta_description' => 'Why Urban Kizomba Europe exists, what it covers, and how to get an event on it.',
+    'about.meta_description' => 'Why Urban Kizomba exists, what it covers, and how to get an event on it.',
     'about.title' => 'About this site',
     'about.p1' => 'Urban kiz has a European calendar that lives in a hundred Facebook events, Instagram stories and WhatsApp groups. If you are in the scene in your own city, you hear about things. If you travel, or you are new, you do not.',
     'about.p2' => 'This site is the calendar in one place: what is on, where, and when. It is run by dancers, not by a festival or a school, and it lists everyone.',
@@ -239,7 +239,7 @@ return [
 
     // Emails ----------------------------------------------------------------------------
     'email.login_code.subject' => 'Your sign-in code: {code}',
-    'email.login_code.greeting' => 'Your sign-in code for Urban Kizomba Europe:',
+    'email.login_code.greeting' => 'Your sign-in code for Urban Kizomba:',
     'email.login_code.ttl' => 'The code is valid for {minutes} minutes.',
     'email.login_code.ignore' => 'If you did not request a code, ignore this email.',
     'email.newsletter_confirm.subject' => 'Confirm your subscription',
