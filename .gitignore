@@ -23,3 +23,6 @@
 .idea/
 .claude/
 /config/reference.php
+
+# Original footage. Only the transcoded hero.mp4 is committed.
+/public/video/example-*
