@@ -1,6 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <!-- Two figures in a close hold: two strokes leaning into each other and
-       touching at the top. Violet leads, pink follows, drawn in front. -->
-  <line x1="18" y1="54" x2="30" y2="12" stroke="#6d28d9" stroke-width="16" stroke-linecap="round"/>
-  <line x1="46" y1="54" x2="34" y2="12" stroke="#db2777" stroke-width="16" stroke-linecap="round"/>
+  <!-- UK monogram. Geometric strokes, not a font, so it renders identically
+       everywhere. The K's two arms lean out from the stem like the two
+       figures of a close hold; pink marks them as the dancers. -->
+  <rect width="64" height="64" rx="14" fill="#4c1d95"/>
+  <!-- U -->
+  <path d="M13,20 v14 a8.5,8.5 0 0 0 17,0 v-14" fill="none" stroke="#ffffff" stroke-width="7.5" stroke-linecap="round"/>
+  <!-- K stem -->
+  <line x1="39" y1="20" x2="39" y2="43" stroke="#ffffff" stroke-width="7.5" stroke-linecap="round"/>
+  <!-- K arms -->
+  <line x1="42" y1="32" x2="53" y2="20" stroke="#f472b6" stroke-width="7.5" stroke-linecap="round"/>
+  <line x1="42" y1="32" x2="53" y2="43" stroke="#f472b6" stroke-width="7.5" stroke-linecap="round"/>
 </svg>
