@@ -94,11 +94,10 @@
             <div id="nav-menu" class="hidden w-full md:order-2 md:block md:w-auto">
                 <div class="flex flex-col gap-1 border-t border-default pt-3 pb-1 md:flex-row md:items-center md:gap-2 md:border-0 md:p-0">
                     {% block nav_actions %}
-                        {# Two destinations, not six. Socials sit under Events
-                           as a tab on that page, and Guides live in the footer
-                           and the hero: the bar is for where people go weekly. #}
+                        {# One destination. Socials sit under Events as a tab
+                           on that page; Cities and Guides live in the footer
+                           until there is enough on them to deserve the bar. #}
                         <a href="{{ path('app_events') }}" class="{{ nav_link_class }}">{{ 'nav.events'|trans }}</a>
-                        <a href="{{ path('app_cities') }}" class="{{ nav_link_class }}">{{ 'nav.cities'|trans }}</a>
 
                         {# FULLY, never app.user: there is no remember-me cookie
                            and every signed-in page demands FULLY, so anything
