@@ -16,6 +16,9 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class AppController extends AbstractController
 {
+    /**
+     * @param array{video: string, poster: string, credit_name: ?string, credit_url: ?string} $hero
+     */
     #[Route('/', name: 'app_home', methods: ['GET'])]
     public function home(
         EventRepository $eventRepository,
