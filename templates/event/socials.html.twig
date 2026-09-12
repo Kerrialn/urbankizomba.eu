@@ -7,6 +7,11 @@
     <div class="mx-auto max-w-4xl px-4 py-10">
         <h1 class="text-3xl font-bold tracking-tight text-heading">{{ 'socials.title'|trans }}</h1>
         <p class="mt-2 text-body">{{ 'socials.intro'|trans }}</p>
+        {# Events and socials are two views of one calendar; the tabs say so. #}
+        <nav class="mt-6 inline-flex rounded-base border border-default bg-white p-1 text-sm font-medium" aria-label="{{ 'events.tabs.label'|trans }}">
+            <a href="{{ path('app_events') }}" class="rounded-[calc(var(--radius-base)-2px)] px-4 py-1.5 text-body hover:bg-neutral-secondary-medium">{{ 'nav.events'|trans }}</a>
+            <a href="{{ path('app_socials') }}" class="rounded-[calc(var(--radius-base)-2px)] px-4 py-1.5 bg-primary text-white">{{ 'nav.socials'|trans }}</a>
+        </nav>
 
         {% if grouped is empty %}
             <div class="mt-10 rounded-2xl border border-dashed border-default-medium bg-white p-8 text-center">

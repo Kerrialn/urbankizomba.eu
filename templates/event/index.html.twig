@@ -16,9 +16,14 @@
     <div class="mx-auto max-w-7xl px-4 py-10">
         <h1 class="text-3xl font-bold tracking-tight text-heading">{{ 'events.title'|trans }}</h1>
         <p class="mt-2 text-body">{{ 'events.intro'|trans }}</p>
+        {# Events and socials are two views of one calendar; the tabs say so. #}
+        <nav class="mt-6 inline-flex rounded-base border border-default bg-white p-1 text-sm font-medium" aria-label="{{ 'events.tabs.label'|trans }}">
+            <a href="{{ path('app_events') }}" class="rounded-[calc(var(--radius-base)-2px)] px-4 py-1.5 bg-primary text-white">{{ 'nav.events'|trans }}</a>
+            <a href="{{ path('app_socials') }}" class="rounded-[calc(var(--radius-base)-2px)] px-4 py-1.5 text-body hover:bg-neutral-secondary-medium">{{ 'nav.socials'|trans }}</a>
+        </nav>
 
         {# GET form: the URL is the state, so a filtered list can be shared. #}
-        <form method="get" action="{{ path('app_events') }}" class="mt-6 flex flex-wrap items-end gap-3">
+        <form method="get" action="{{ path('app_events') }}" class="mt-5 flex flex-wrap items-end gap-3">
             {% set select_class = 'block rounded-base border border-default-medium bg-white px-3 py-2 text-sm text-heading focus:border-brand focus:ring-brand' %}
             <label class="text-sm">
                 <span class="block text-xs font-medium text-body-subtle">{{ 'events.filter.country'|trans }}</span>
