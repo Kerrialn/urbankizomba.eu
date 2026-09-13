@@ -86,16 +86,16 @@
         </div>
 
         {% if article.cta.primary is defined %}
-            <aside class="mt-12 rounded-2xl border border-default bg-neutral-secondary-soft p-6 text-center">
+            <aside class="mt-12 facet facet-frame facet-fill-brand-softer p-6 text-center">
                 <p class="font-semibold text-heading">{{ 'articles.cta.heading'|trans }}</p>
                 <div class="mt-5 flex flex-col justify-center gap-3 sm:flex-row">
                     <a href="{{ path(article.cta.primary.route) }}"
-                       class="rounded-base bg-primary px-5 py-3 font-medium text-white hover:bg-primary-hover">
+                       class="facet-sm bg-primary px-5 py-3 font-medium text-white hover:bg-primary-hover">
                         {{ article.cta.primary.label }}
                     </a>
                     {% if article.cta.secondary is defined %}
                         <a href="{{ path(article.cta.secondary.route) }}"
-                           class="rounded-base border border-default bg-white px-5 py-3 font-medium text-body hover:bg-neutral-secondary-medium">
+                           class="facet-sm facet-frame px-5 py-3 font-medium text-body hover:facet-fill-neutral-secondary-medium">
                             {{ article.cta.secondary.label }}
                         </a>
                     {% endif %}

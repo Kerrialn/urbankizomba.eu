@@ -73,7 +73,7 @@
 {% block body %}
     <article class="mx-auto max-w-5xl px-4 py-10">
         {% if not event.approved %}
-            <div class="mb-6 rounded-base bg-warning-medium px-4 py-3 text-sm text-warning-strong">
+            <div class="mb-6 facet-sm bg-warning-medium px-4 py-3 text-sm text-warning-strong">
                 {{ ('event.preview.' ~ event.status.value)|trans }}
                 {% if event.reviewNote %}<span class="block mt-1">{{ 'event.preview.note'|trans({ note: event.reviewNote }) }}</span>{% endif %}
             </div>
@@ -107,7 +107,7 @@
 
                 {% if event.poster %}
                     <img src="{{ asset('uploads/posters/' ~ event.poster) }}" alt=""
-                         class="mt-6 w-full rounded-2xl border border-default lg:hidden">
+                         class="mt-6 w-full facet lg:hidden">
                 {% endif %}
 
                 <div class="mt-8 whitespace-pre-line leading-relaxed text-body">{{ event.description }}</div>
@@ -121,10 +121,10 @@
             <aside class="space-y-4">
                 {% if event.poster %}
                     <img src="{{ asset('uploads/posters/' ~ event.poster) }}" alt=""
-                         class="hidden w-full rounded-2xl border border-default lg:block">
+                         class="hidden w-full facet lg:block">
                 {% endif %}
 
-                <div class="rounded-2xl border border-default bg-white p-5 text-sm">
+                <div class="facet facet-frame p-5 text-sm" style="--facet-shape: var(--facet-b)">
                     <dl class="space-y-3">
                         {% if event.venue or event.address %}
                             <div>
@@ -148,13 +148,13 @@
                         <div class="mt-5 flex flex-col gap-2">
                             {% if event.ticketUrl %}
                                 <a href="{{ event.ticketUrl }}" rel="noopener nofollow" target="_blank"
-                                   class="rounded-base bg-primary px-4 py-2.5 text-center font-medium text-white hover:bg-primary-hover">
+                                   class="facet-sm bg-primary px-4 py-2.5 text-center font-medium text-white hover:bg-primary-hover">
                                     {{ 'event.tickets'|trans }}
                                 </a>
                             {% endif %}
                             {% if event.url %}
                                 <a href="{{ event.url }}" rel="noopener nofollow" target="_blank"
-                                   class="rounded-base border border-default px-4 py-2.5 text-center font-medium text-body hover:bg-neutral-secondary-medium">
+                                   class="facet-sm facet-frame px-4 py-2.5 text-center font-medium text-body hover:facet-fill-neutral-secondary-medium">
                                     {{ 'event.website'|trans }}
                                 </a>
                             {% endif %}
@@ -164,7 +164,7 @@
 
                 {% if event.isSubmittedBy(app.user) %}
                     <a href="{{ path('app_account_event_edit', { id: event.id }) }}"
-                       class="block rounded-base border border-default bg-white px-4 py-2.5 text-center text-sm font-medium text-body hover:bg-neutral-secondary-medium">
+                       class="block facet-sm facet-frame px-4 py-2.5 text-center text-sm font-medium text-body hover:facet-fill-neutral-secondary-medium">
                         {{ 'event.edit_mine'|trans }}
                     </a>
                 {% endif %}
@@ -175,7 +175,7 @@
         {% if others is not empty %}
             <section class="mt-14 border-t border-default pt-8">
                 <h2 class="text-xl font-bold text-heading">{{ 'event.more_in_city'|trans({ city: city.name }) }}</h2>
-                <div class="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                <div class="facet-vary mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                     {% for other in others|slice(0, 4) %}
                         {{ include('event/_card.html.twig', { event: other }) }}
                     {% endfor %}

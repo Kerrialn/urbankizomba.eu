@@ -13,7 +13,7 @@
         {{ form_start(form, { attr: { class: 'mt-8', 'data-controller': 'event-type' } }) }}
             {{ form_errors(form) }}
 
-            <section class="rounded-2xl border border-default bg-white p-5">
+            <section class="facet facet-frame p-5">
                 <h2 class="mb-4 text-sm font-semibold uppercase tracking-wide text-body-subtle">{{ 'submit.section.what'|trans }}</h2>
                 {{ form_row(form.type) }}
                 {{ form_row(form.title) }}
@@ -32,7 +32,7 @@
                 </div>
             </section>
 
-            <section class="mt-5 rounded-2xl border border-default bg-white p-5">
+            <section class="mt-5 facet facet-frame p-5">
                 <h2 class="mb-4 text-sm font-semibold uppercase tracking-wide text-body-subtle">{{ 'submit.section.where'|trans }}</h2>
                 {{ form_row(form.city) }}
                 <div class="grid gap-x-4 sm:grid-cols-2">
@@ -43,7 +43,7 @@
                 {{ form_row(form.address) }}
             </section>
 
-            <section class="mt-5 rounded-2xl border border-default bg-white p-5">
+            <section class="mt-5 facet facet-frame p-5">
                 <h2 class="mb-4 text-sm font-semibold uppercase tracking-wide text-body-subtle">{{ 'submit.section.details'|trans }}</h2>
                 {{ form_row(form.description) }}
                 {{ form_row(form.organiser) }}
@@ -59,7 +59,7 @@
             <p class="mt-5 text-sm text-body-subtle">{{ 'submit.review_note'|trans }}</p>
 
             <button type="submit"
-                    class="mt-4 w-full rounded-base bg-primary px-4 py-3 font-medium text-white hover:bg-primary-hover">
+                    class="mt-4 w-full facet-sm bg-primary px-4 py-3 font-medium text-white hover:bg-primary-hover">
                 {{ (editing ? 'submit.button.update' : 'submit.button.submit')|trans }}
             </button>
         {{ form_end(form) }}

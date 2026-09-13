@@ -9,7 +9,7 @@
         <p class="mt-2 text-body">{{ 'cities.intro'|trans }}</p>
 
         {% if grouped is empty %}
-            <div class="mt-10 rounded-2xl border border-dashed border-default-medium bg-white p-8 text-center">
+            <div class="mt-10 facet facet-frame facet-line-default-medium facet-fill-brand-softer p-8 text-center">
                 <p class="font-medium text-heading">{{ 'cities.empty.title'|trans }}</p>
                 <p class="mt-2 text-sm text-body-subtle">{{ 'cities.empty.body'|trans }}</p>
             </div>
@@ -17,11 +17,11 @@
             {% for country, rows in grouped %}
                 <section class="mt-10">
                     <h2 class="text-sm font-semibold uppercase tracking-wide text-body-subtle">{{ country }}</h2>
-                    <ul class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    <ul class="facet-vary mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                         {% for row in rows %}
                             <li>
                                 <a href="{{ path('app_city', { slug: row.city.slug }) }}"
-                                   class="flex items-center justify-between rounded-2xl border border-default bg-white px-5 py-4 hover:border-brand-medium hover:shadow-md">
+                                   class="facet facet-frame flex items-center justify-between px-5 py-4 hover:facet-line-brand-medium">
                                     <span class="font-semibold text-heading">{{ row.city.name }}</span>
                                     <span class="text-xs text-body-subtle">
                                         {% if row.upcoming > 0 %}{{ 'cities.count.upcoming'|trans({ count: row.upcoming }) }}{% endif %}

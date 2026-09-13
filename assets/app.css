@@ -61,7 +61,20 @@
     --color-accent: #db2777;         /* pink-600, 4.6:1 on white */
     --color-accent-soft: #fce7f3;
 
-    --radius-base: 0.5rem;
+    /* No rounded corners anywhere: the logo is a cut stone, all hard angles.
+       Tailwind's own scale is zeroed too, so Flowbite and UX Toolkit
+       components square off with everything else. Cut corners come from the
+       facet utilities below. `rounded-full` is untouched, for the few things
+       that really are circles (radio, toggle). */
+    --radius-base: 0;
+    --radius-xs: 0;
+    --radius-sm: 0;
+    --radius-md: 0;
+    --radius-lg: 0;
+    --radius-xl: 0;
+    --radius-2xl: 0;
+    --radius-3xl: 0;
+    --radius-4xl: 0;
 
     /* Semantic text -------------------------------------------------------- */
     --color-body: #374151;
@@ -127,6 +140,92 @@
         --tw-ring-color: var(--color-primary);
         border-color: var(--color-primary);
     }
+}
+
+/* ---------------------------------------------------------------------------
+   Facets: boxes cut like the logo
+   ---------------------------------------------------------------------------
+   The logo is an irregular nine-sided stone. Boxes echo it with clip-path
+   polygons: corners cut at unequal sizes and edges a few pixels off square.
+   Offsets are in px, never %, so a cut looks the same on a badge-wide card
+   and a page-wide panel, and the slants stay inside any p-4 padding.
+
+     facet        cards and panels (shape a; b and c are variations)
+     facet-sm     buttons, chips, badges, notices
+     facet-frame  adds a 1px outline. clip-path cuts a CSS border off at the
+                  angles, so the outline is the element's own background
+                  showing round a fill one pixel smaller. Colour it with
+                  facet-line-{colour} and facet-fill-{colour}, which take
+                  variants (hover:, peer-checked:) like any utility.
+     facet-vary   on a grid or list: its children take shapes a, b, c in turn,
+                  so a row of cards reads as cut by hand, not stamped.
+
+   Anything clipped loses box-shadow and an outside focus ring, so neither is
+   used on a facet; keyboard focus is drawn inside the shape instead.
+   --------------------------------------------------------------------------- */
+
+:root {
+    --facet-a: polygon(0 16px, 18px 0, calc(100% - 38px) 4px, 100% 26px, calc(100% - 3px) calc(100% - 22px), calc(100% - 30px) 100%, 12px calc(100% - 4px), 0 calc(100% - 14px));
+    --facet-b: polygon(0 8px, 26px 0, calc(100% - 14px) 0, 100% 18px, 100% calc(100% - 30px), calc(100% - 20px) calc(100% - 3px), 22px 100%, 3px calc(100% - 24px));
+    --facet-c: polygon(4px 28px, 22px 3px, calc(100% - 20px) 0, 100% 12px, calc(100% - 2px) calc(100% - 10px), calc(100% - 38px) 100%, 0 calc(100% - 6px));
+    --facet-s: polygon(0 6px, 6px 0, calc(100% - 3px) 0, 100% calc(100% - 9px), calc(100% - 10px) 100%, 2px 100%);
+}
+
+@utility facet {
+    clip-path: var(--facet-shape, var(--facet-a));
+
+    &:focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: -6px;
+    }
+}
+
+@utility facet-sm {
+    --facet-shape: var(--facet-s);
+    clip-path: var(--facet-s);
+
+    &:focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: -4px;
+    }
+}
+
+@utility facet-frame {
+    position: relative;
+    isolation: isolate;
+    border: 0;
+    background: var(--facet-line, var(--color-default));
+
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 1px;
+        z-index: -1;
+        background: var(--facet-fill, #ffffff);
+        clip-path: inherit;
+        transition: background-color 150ms;
+    }
+}
+
+@utility facet-line-* {
+    --facet-line: --value(--color-*);
+}
+
+@utility facet-fill-* {
+    --facet-fill: --value(--color-*);
+}
+
+.facet-vary > :nth-child(3n + 2) {
+    --facet-shape: var(--facet-b);
+}
+
+.facet-vary > :nth-child(3n) {
+    --facet-shape: var(--facet-c);
+}
+
+/* The home hero ends on a slant instead of a straight line. */
+@utility facet-hero {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 40px));
 }
 
 /* The landing-page clip is decoration. Someone who has asked their OS for less

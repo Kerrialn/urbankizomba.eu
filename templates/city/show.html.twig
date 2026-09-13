@@ -20,7 +20,7 @@
                     <a href="{{ path('app_submit') }}" class="text-primary hover:underline">{{ 'city.socials.add'|trans }}</a>
                 </p>
             {% else %}
-                <div class="mt-4 rounded-2xl border border-default bg-white px-5">
+                <div class="mt-4 facet facet-frame px-5">
                     <ul class="divide-y divide-default">
                         {% for social in socials %}
                             {{ include('event/_social_row.html.twig', { social: social, confirmation_days: confirmation_days }) }}
@@ -38,7 +38,7 @@
                     <a href="{{ path('app_submit') }}" class="text-primary hover:underline">{{ 'city.upcoming.add'|trans }}</a>
                 </p>
             {% else %}
-                <div class="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                <div class="facet-vary mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     {% for event in upcoming %}
                         {{ include('event/_card.html.twig', { event: event }) }}
                     {% endfor %}

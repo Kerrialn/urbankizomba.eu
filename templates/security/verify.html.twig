@@ -10,7 +10,7 @@
         </p>
 
         {% if error %}
-            <div class="mt-4 rounded-base bg-danger-medium px-4 py-3 text-sm text-danger-strong">
+            <div class="mt-4 facet-sm bg-danger-medium px-4 py-3 text-sm text-danger-strong">
                 {{ error.messageKey|trans(error.messageData) }}
             </div>
         {% endif %}
@@ -23,7 +23,7 @@
             {{ form_row(form.code) }}
 
             <button type="submit"
-                    class="mt-6 w-full rounded-base bg-primary px-4 py-2.5 font-medium text-white hover:bg-primary-hover">
+                    class="mt-6 w-full facet-sm bg-primary px-4 py-2.5 font-medium text-white hover:bg-primary-hover">
                 {{ 'security.verify.submit'|trans }}
             </button>
         {{ form_end(form) }}

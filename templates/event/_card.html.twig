@@ -1,7 +1,7 @@
 {# One event in a grid. Used on the home page, the events list and the city
    page, so the three cannot drift in what they show. #}
 <a href="{{ path('app_event', { slug: event.slug }) }}"
-   class="group flex flex-col overflow-hidden rounded-2xl border border-default bg-white shadow-xs transition hover:border-brand-medium hover:shadow-md">
+   class="group facet facet-frame flex flex-col overflow-hidden transition hover:-translate-y-0.5 hover:facet-line-brand-medium">
     <div class="relative aspect-[4/3] w-full overflow-hidden bg-brand-soft">
         {% if event.poster %}
             <img src="{{ asset('uploads/posters/' ~ event.poster) }}"
@@ -17,7 +17,7 @@
                 </span>
             </div>
         {% endif %}
-        <span class="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-brand-strong">
+        <span class="absolute left-4 top-4 facet-sm bg-white/90 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-brand-strong">
             {{ event.type.label|trans }}
         </span>
     </div>

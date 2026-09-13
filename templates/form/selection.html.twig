@@ -25,9 +25,9 @@
                     {% if child.vars.required and not multiple %}required{% endif %}
                 />
                 <label for="{{ child.vars.id }}"
-                       class="inline-flex items-center px-4 py-2 rounded-full border border-default-medium text-sm font-medium cursor-pointer transition-colors
-                              text-body bg-white hover:bg-primary hover:text-white
-                              peer-checked:bg-primary peer-checked:text-white peer-checked:border-primary
+                       class="facet-sm facet-frame facet-line-default-medium inline-flex items-center px-4 py-2 text-sm font-medium cursor-pointer transition-colors
+                              text-body hover:facet-fill-primary hover:text-white
+                              peer-checked:facet-fill-primary peer-checked:text-white peer-checked:facet-line-primary
                               peer-disabled:opacity-50 peer-disabled:cursor-not-allowed">
                     {{- child.vars.label|trans({}, translation_domain) -}}
                 </label>

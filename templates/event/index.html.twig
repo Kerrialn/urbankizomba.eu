@@ -17,9 +17,9 @@
         <h1 class="text-3xl font-bold tracking-tight text-heading">{{ 'events.title'|trans }}</h1>
         <p class="mt-2 text-body">{{ 'events.intro'|trans }}</p>
         {# Events and socials are two views of one calendar; the tabs say so. #}
-        <nav class="mt-6 inline-flex rounded-base border border-default bg-white p-1 text-sm font-medium" aria-label="{{ 'events.tabs.label'|trans }}">
-            <a href="{{ path('app_events') }}" class="rounded-[calc(var(--radius-base)-2px)] px-4 py-1.5 bg-primary text-white">{{ 'nav.events'|trans }}</a>
-            <a href="{{ path('app_socials') }}" class="rounded-[calc(var(--radius-base)-2px)] px-4 py-1.5 text-body hover:bg-neutral-secondary-medium">{{ 'nav.socials'|trans }}</a>
+        <nav class="mt-6 inline-flex facet-sm facet-frame p-1 text-sm font-medium" aria-label="{{ 'events.tabs.label'|trans }}">
+            <a href="{{ path('app_events') }}" class="facet-sm px-4 py-1.5 bg-primary text-white">{{ 'nav.events'|trans }}</a>
+            <a href="{{ path('app_socials') }}" class="facet-sm px-4 py-1.5 text-body hover:bg-neutral-secondary-medium">{{ 'nav.socials'|trans }}</a>
         </nav>
 
         {# GET form: the URL is the state, so a filtered list can be shared. #}
@@ -52,7 +52,7 @@
                     {% endfor %}
                 </select>
             </label>
-            <button type="submit" class="rounded-base bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-hover">
+            <button type="submit" class="facet-sm bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-hover">
                 {{ 'events.filter.apply'|trans }}
             </button>
             {% if filter.country or filter.type or filter.month %}
@@ -61,7 +61,7 @@
         </form>
 
         {% if pagination.totalItemCount == 0 %}
-            <div class="mt-10 rounded-2xl border border-dashed border-default-medium bg-white p-8 text-center">
+            <div class="mt-10 facet facet-frame facet-line-default-medium facet-fill-brand-softer p-8 text-center">
                 <p class="font-medium text-heading">{{ 'events.empty.title'|trans }}</p>
                 <p class="mt-2 text-sm text-body-subtle">{{ 'events.empty.body'|trans }}</p>
                 <a href="{{ path('app_submit') }}" class="mt-4 inline-block text-sm font-medium text-primary hover:underline">{{ 'nav.submit'|trans }}</a>
@@ -70,7 +70,7 @@
             <p class="mt-6 text-sm text-body-subtle">
                 {{ 'events.count'|trans({ count: pagination.totalItemCount }) }}
             </p>
-            <div class="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="facet-vary mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                 {% for event in pagination %}
                     {{ include('event/_card.html.twig', { event: event }) }}
                 {% endfor %}

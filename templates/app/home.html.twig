@@ -22,7 +22,7 @@
        controls, hidden for anyone who asked for reduced motion (app.css). The
        poster is what shows first, on slow connections, and when there is no
        clip yet. Everything a visitor needs is in the text on top of it. #}
-    <section class="relative flex min-h-[85vh] items-end overflow-hidden bg-brand-strong text-white">
+    <section class="facet-hero relative flex min-h-[85vh] items-end overflow-hidden bg-brand-strong text-white">
         {% if hero_video %}
             <video class="hero-video absolute inset-0 h-full w-full object-cover"
                    autoplay muted loop playsinline preload="metadata"
@@ -48,11 +48,11 @@
                 <p class="mt-5 max-w-xl text-lg leading-relaxed text-white/85">{{ 'home.intro'|trans }}</p>
                 <div class="mt-8 flex flex-col gap-3 sm:flex-row">
                     <a href="{{ path('app_events') }}"
-                       class="rounded-base bg-white px-5 py-3 text-center font-medium text-brand-strong hover:bg-brand-softer">
+                       class="facet-sm bg-white px-5 py-3 text-center font-medium text-brand-strong hover:bg-brand-softer">
                         {{ 'home.cta.events'|trans }}
                     </a>
                     <a href="{{ path('app_submit') }}"
-                       class="rounded-base border border-white/40 px-5 py-3 text-center font-medium text-white hover:bg-white/10">
+                       class="facet-sm bg-white/15 px-5 py-3 text-center font-medium text-white hover:bg-white/25">
                         {{ 'home.cta.submit'|trans }}
                     </a>
                 </div>
@@ -83,13 +83,13 @@
         </div>
 
         {% if events is empty %}
-            <div class="mt-6 rounded-2xl border border-dashed border-default-medium bg-white p-8 text-center">
+            <div class="mt-6 facet facet-frame facet-line-default-medium facet-fill-brand-softer p-8 text-center">
                 <p class="font-medium text-heading">{{ 'home.upcoming.empty.title'|trans }}</p>
                 <p class="mt-2 text-sm text-body-subtle">{{ 'home.upcoming.empty.body'|trans }}</p>
                 <a href="{{ path('app_submit') }}" class="mt-4 inline-block text-sm font-medium text-primary hover:underline">{{ 'home.cta.submit'|trans }}</a>
             </div>
         {% else %}
-            <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="facet-vary mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                 {% for event in events %}
                     {{ include('event/_card.html.twig', { event: event }) }}
                 {% endfor %}
@@ -107,7 +107,7 @@
                 {% for row in cities %}
                     <li>
                         <a href="{{ path('app_city', { slug: row.city.slug }) }}"
-                           class="inline-flex items-center gap-2 rounded-full border border-default bg-white px-4 py-2 text-sm font-medium text-body hover:border-brand hover:text-primary">
+                           class="facet-sm facet-frame inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-body hover:facet-line-brand hover:text-primary">
                             {{ row.city.name }}
                             <span class="text-xs text-body-subtle">{{ row.upcoming + row.socials }}</span>
                         </a>

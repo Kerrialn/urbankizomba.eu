@@ -8,13 +8,13 @@
         <h1 class="text-3xl font-bold tracking-tight text-heading">{{ 'socials.title'|trans }}</h1>
         <p class="mt-2 text-body">{{ 'socials.intro'|trans }}</p>
         {# Events and socials are two views of one calendar; the tabs say so. #}
-        <nav class="mt-6 inline-flex rounded-base border border-default bg-white p-1 text-sm font-medium" aria-label="{{ 'events.tabs.label'|trans }}">
-            <a href="{{ path('app_events') }}" class="rounded-[calc(var(--radius-base)-2px)] px-4 py-1.5 text-body hover:bg-neutral-secondary-medium">{{ 'nav.events'|trans }}</a>
-            <a href="{{ path('app_socials') }}" class="rounded-[calc(var(--radius-base)-2px)] px-4 py-1.5 bg-primary text-white">{{ 'nav.socials'|trans }}</a>
+        <nav class="mt-6 inline-flex facet-sm facet-frame p-1 text-sm font-medium" aria-label="{{ 'events.tabs.label'|trans }}">
+            <a href="{{ path('app_events') }}" class="facet-sm px-4 py-1.5 text-body hover:bg-neutral-secondary-medium">{{ 'nav.events'|trans }}</a>
+            <a href="{{ path('app_socials') }}" class="facet-sm px-4 py-1.5 bg-primary text-white">{{ 'nav.socials'|trans }}</a>
         </nav>
 
         {% if grouped is empty %}
-            <div class="mt-10 rounded-2xl border border-dashed border-default-medium bg-white p-8 text-center">
+            <div class="mt-10 facet facet-frame facet-line-default-medium facet-fill-brand-softer p-8 text-center">
                 <p class="font-medium text-heading">{{ 'socials.empty.title'|trans }}</p>
                 <p class="mt-2 text-sm text-body-subtle">{{ 'socials.empty.body'|trans }}</p>
                 <a href="{{ path('app_submit') }}" class="mt-4 inline-block text-sm font-medium text-primary hover:underline">{{ 'nav.submit'|trans }}</a>
@@ -24,7 +24,7 @@
                 <section class="mt-10">
                     <h2 class="text-xl font-bold text-heading">{{ country }}</h2>
                     {% for city_name, socials in cities %}
-                        <div class="mt-4 rounded-2xl border border-default bg-white px-5">
+                        <div class="mt-4 facet facet-frame px-5">
                             <h3 class="pt-4 text-sm font-semibold uppercase tracking-wide text-body-subtle">
                                 <a href="{{ path('app_city', { slug: socials[0].city.slug }) }}" class="hover:text-primary hover:underline">{{ city_name }}</a>
                             </h3>

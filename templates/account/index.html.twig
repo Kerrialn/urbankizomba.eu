@@ -11,7 +11,7 @@
                 <p class="mt-2 text-sm text-body-subtle">{{ app.user.email }}</p>
             </div>
             <a href="{{ path('app_submit') }}"
-               class="rounded-base bg-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-hover">
+               class="facet-sm bg-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-hover">
                 {{ 'nav.submit'|trans }}
             </a>
         </div>
@@ -20,14 +20,14 @@
             <h2 class="text-sm font-semibold uppercase tracking-wide text-body-subtle">{{ 'account.events.heading'|trans }}</h2>
 
             {% if events is empty %}
-                <div class="mt-4 rounded-2xl border border-dashed border-default-medium bg-white p-8 text-center">
+                <div class="mt-4 facet facet-frame facet-line-default-medium facet-fill-brand-softer p-8 text-center">
                     <p class="font-medium text-heading">{{ 'account.events.empty.title'|trans }}</p>
                     <p class="mt-2 text-sm text-body-subtle">{{ 'account.events.empty.body'|trans }}</p>
                 </div>
             {% else %}
-                <ul class="mt-4 space-y-3">
+                <ul class="facet-vary mt-4 space-y-3">
                     {% for event in events %}
-                        <li class="rounded-2xl border border-default bg-white p-5">
+                        <li class="facet facet-frame p-5">
                             <div class="flex flex-wrap items-start justify-between gap-3">
                                 <div class="min-w-0">
                                     <a href="{{ path('app_event', { slug: event.slug }) }}" class="font-semibold text-heading hover:text-primary hover:underline">{{ event.title }}</a>
@@ -36,7 +36,7 @@
                                         {% if event.startsAt %} · {{ event.startsAt|format_date('medium') }}{% elseif event.schedule %} · {{ event.schedule }}{% endif %}
                                     </p>
                                 </div>
-                                <span class="rounded-full px-2.5 py-0.5 text-xs font-medium
+                                <span class="facet-sm px-2.5 py-0.5 text-xs font-medium
                                     {{ event.approved ? 'bg-success-medium text-success-strong'
                                      : event.pending ? 'bg-warning-medium text-warning-strong'
                                      : 'bg-danger-medium text-danger-strong' }}">
@@ -45,7 +45,7 @@
                             </div>
 
                             {% if event.reviewNote and not event.pending %}
-                                <p class="mt-3 rounded-base bg-neutral-secondary-soft px-3 py-2 text-sm text-body">{{ 'account.events.note'|trans({ note: event.reviewNote }) }}</p>
+                                <p class="mt-3 facet-sm bg-neutral-secondary-soft px-3 py-2 text-sm text-body">{{ 'account.events.note'|trans({ note: event.reviewNote }) }}</p>
                             {% endif %}
 
                             <div class="mt-4 flex flex-wrap items-center gap-3 text-sm">

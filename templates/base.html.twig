@@ -1,5 +1,5 @@
 {% set nav_link_class = 'block rounded-base px-3 py-2 text-sm font-medium text-body hover:bg-neutral-secondary-medium md:py-1.5' %}
-{% set nav_cta_class = 'block rounded-base bg-primary px-3 py-2 text-center text-sm font-medium text-white hover:bg-primary-hover md:py-1.5' %}
+{% set nav_cta_class = 'block facet-sm bg-primary px-3 py-2 text-center text-sm font-medium text-white hover:bg-primary-hover md:py-1.5' %}
 <!DOCTYPE html>
 <html lang="{{ app.request.locale }}" class="h-full">
 <head>
@@ -122,7 +122,7 @@
 {% for label, messages in app.flashes %}
     {% for message in messages %}
         <div class="mx-auto max-w-7xl px-4 pt-4">
-            <div class="rounded-base px-4 py-3 text-sm
+            <div class="facet-sm px-4 py-3 text-sm
                         {{ label == 'success' ? 'bg-success-medium text-success-strong'
                          : label == 'error'  ? 'bg-danger-medium text-danger-strong'
                          : 'bg-brand-soft text-brand-strong' }}">
