@@ -1,4 +1,4 @@
-{% set nav_link_class = 'block rounded-base px-3 py-2 text-sm font-medium text-body hover:bg-neutral-secondary-medium md:py-1.5' %}
+{% set nav_link_class = 'block facet-sm px-3 py-2 text-sm font-medium text-body hover:bg-neutral-secondary-medium md:py-1.5' %}
 {% set nav_cta_class = 'block facet-sm bg-primary px-3 py-2 text-center text-sm font-medium text-white hover:bg-primary-hover md:py-1.5' %}
 <!DOCTYPE html>
 <html lang="{{ app.request.locale }}" class="h-full">
@@ -85,7 +85,7 @@
                         data-collapse-toggle="nav-menu"
                         aria-controls="nav-menu"
                         aria-expanded="false"
-                        class="inline-flex items-center rounded-base p-2 text-body hover:bg-neutral-secondary-medium md:hidden">
+                        class="inline-flex items-center facet-sm p-2 text-body hover:bg-neutral-secondary-medium md:hidden">
                     <span class="sr-only">{{ 'nav.menu'|trans }}</span>
                     {{ ux_icon('tabler:menu-2', { style: 'height: 1.5rem; width: 1.5rem;' }) }}
                 </button>
