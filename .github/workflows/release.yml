@@ -163,6 +163,34 @@ jobs:
           fi
           echo "All placeholders substituted."
 
+      # The placeholder check above only covers the __UK_*__ values in the
+      # compose template. The SSH secrets never go into that file, so they are
+      # checked here: set, not the placeholder, and a private key ssh can read.
+      # Without this a bad key surfaces as "Permission denied" from rsync.
+      - name: Check the deploy secrets
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
+          DEPLOY_PRIVATE_KEY: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+        run: |
+          for name in DEPLOY_HOST DEPLOY_USERNAME DEPLOY_PRIVATE_KEY; do
+            value="${!name}"
+            if [ -z "$value" ] || [ "$value" = "__CHANGE_ME__" ]; then
+              echo "::error::$name is not set."
+              exit 1
+            fi
+          done
+          key=$(mktemp)
+          printf '%s\n' "$DEPLOY_PRIVATE_KEY" | tr -d '\r' > "$key"
+          chmod 600 "$key"
+          if ! ssh-keygen -y -P '' -f "$key" > /dev/null 2>&1; then
+            rm -f "$key"
+            echo "::error::DEPLOY_PRIVATE_KEY is not a readable private key. Paste the whole private key, BEGIN and END lines included, with no passphrase."
+            exit 1
+          fi
+          rm -f "$key"
+          echo "Deploy secrets look usable."
+
       - name: Rsync Docker files
         uses: burnett01/rsync-deployments@5.2
         with:
