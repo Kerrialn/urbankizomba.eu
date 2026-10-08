@@ -35,8 +35,8 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         // Set to null to show the poster still alone, keeping the file in place.
         'video' => 'video/radim-and-hali.mp4',
         'poster' => 'images/hero-poster.jpg',
-        'credit_name' => null,
-        'credit_url' => null,
+        'credit_name' => 'Radim and Hali',
+        'credit_url' => 'https://radimhalikiz.cz/',
     ]);
 
     // How many days a recurring social can go without someone confirming it is
