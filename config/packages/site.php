@@ -21,19 +21,19 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         'instagram' => 'https://www.instagram.com/urbankizomba.eu',
     ]);
 
-    // The landing-page hero: a muted, looping clip of people dancing, so a
+    // The landing-page hero: a looping clip of people dancing, so a
     // newcomer sees what urban kiz is before reading a word. Paths are under
     // public/. When the video file is missing the hero shows the poster alone,
     // so the page never breaks on a fresh checkout.
     //
     // Footage belongs to whoever filmed it. Only use a clip with the owner's
     // permission, and name them: credit_name and credit_url are printed on
-    // the hero. Keep the file small (H.264 MP4, no audio track, ~10 seconds,
-    // under 8 MB) — it is downloaded by every visitor on every visit.
+    // the hero. It autoplays muted; visitors can turn the sound on. Keep the
+    // file small (H.264 1080p/30 MP4, AAC audio, faststart, under 8 MB) — it
+    // is downloaded by every visitor on every visit.
     $containerConfigurator->parameters()->set('app.hero', [
         // Set to null to show the poster still alone, keeping the file in place.
-        'video' => null,
-        // 'video' => 'video/hero.mp4',
+        'video' => 'video/radim-and-hali.mp4',
         'poster' => 'images/hero-poster.jpg',
         'credit_name' => null,
         'credit_url' => null,

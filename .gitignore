@@ -24,5 +24,5 @@
 .claude/
 /config/reference.php
 
-# Original footage. Only the transcoded hero.mp4 is committed.
+# Original footage. Only the transcoded clip is committed.
 /public/video/example-*

@@ -18,16 +18,27 @@
 {% endblock %}
 
 {% block body %}
-    {# Full-viewport hero. The video is decoration: muted, looping, no
-       controls, hidden for anyone who asked for reduced motion (app.css). The
-       poster is what shows first, on slow connections, and when there is no
-       clip yet. Everything a visitor needs is in the text on top of it. #}
-    <section class="facet-hero relative flex min-h-[85vh] items-end overflow-hidden bg-brand-strong text-white">
+    {# Full-viewport hero. The video is decoration: it autoplays muted and
+       looping, and is hidden for anyone who asked for reduced motion
+       (app.css). Play/pause and sound buttons sit in the corner, shown on
+       hover or keyboard focus, and always on touch screens, which cannot
+       hover. The poster is what shows first, on slow connections, and when
+       there is no clip yet. Everything a visitor needs is in the text on top. #}
+    <section class="facet-hero group relative flex min-h-[85vh] items-end overflow-hidden bg-brand-strong text-white"
+             {% if hero_video %}
+                 data-controller="hero-video"
+                 data-hero-video-play-label-value="{{ 'home.video.play'|trans }}"
+                 data-hero-video-pause-label-value="{{ 'home.video.pause'|trans }}"
+                 data-hero-video-mute-label-value="{{ 'home.video.mute'|trans }}"
+                 data-hero-video-unmute-label-value="{{ 'home.video.unmute'|trans }}"
+             {% endif %}>
         {% if hero_video %}
             <video class="hero-video absolute inset-0 h-full w-full object-cover"
                    autoplay muted loop playsinline preload="metadata"
                    poster="{{ asset(hero.poster) }}"
-                   aria-hidden="true">
+                   aria-hidden="true"
+                   data-hero-video-target="video"
+                   data-action="play->hero-video#render pause->hero-video#render volumechange->hero-video#render">
                 <source src="{{ asset(hero.video|default('')) }}" type="video/mp4">
             </video>
         {% else %}
@@ -38,6 +49,24 @@
         {# Darkening from the bottom, where the text sits, so white copy holds
            contrast on any frame of the clip. #}
         <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/20" aria-hidden="true"></div>
+
+        {% if hero_video %}
+            {% set hero_button_class = 'facet-sm flex size-10 items-center justify-center bg-black/40 text-white backdrop-blur-sm hover:bg-black/60 focus-visible:outline-2 focus-visible:outline-white' %}
+            <div class="hero-video-controls absolute right-4 top-4 z-10 flex gap-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100 focus-within:opacity-100 [@media(hover:none)]:opacity-100">
+                <button type="button" class="{{ hero_button_class }}"
+                        data-hero-video-target="play" data-action="hero-video#togglePlay"
+                        aria-label="{{ 'home.video.pause'|trans }}">
+                    <svg data-icon="pause" class="size-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
+                    <svg data-icon="play" class="hidden size-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a.5.5 0 0 0 .77.42l10.2-6.5a.5.5 0 0 0 0-.84L8.77 5.08A.5.5 0 0 0 8 5.5z"/></svg>
+                </button>
+                <button type="button" class="{{ hero_button_class }}"
+                        data-hero-video-target="mute" data-action="hero-video#toggleMute"
+                        aria-label="{{ 'home.video.unmute'|trans }}">
+                    <svg data-icon="unmute" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path d="m22 9-6 6M16 9l6 6"/></svg>
+                    <svg data-icon="mute" class="hidden size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+                </button>
+            </div>
+        {% endif %}
 
         <div class="relative mx-auto w-full max-w-7xl px-4 pb-16 pt-32 sm:pb-24">
             <div class="max-w-2xl">

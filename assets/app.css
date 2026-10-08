@@ -229,9 +229,11 @@
 }
 
 /* The landing-page clip is decoration. Someone who has asked their OS for less
-   motion gets the poster frame instead; the text on top is unchanged. */
+   motion gets the poster frame instead, without the clip's buttons; the text
+   on top is unchanged. */
 @media (prefers-reduced-motion: reduce) {
-    .hero-video {
+    .hero-video,
+    .hero-video-controls {
         display: none;
     }
 }
